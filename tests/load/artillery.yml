@@ -1,0 +1,254 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm-up"
+
+    # Ramp-up phase
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp-up"
+
+    # Sustained load phase
+    - duration: 300
+      arrivalRate: 50
+      name: "Sustained load"
+
+    # Peak load phase
+    - duration: 120
+      arrivalRate: 100
+      name: "Peak load"
+
+    # Cool-down phase
+    - duration: 60
+      arrivalRate: 10
+      name: "Cool-down"
+
+  defaults:
+    headers:
+      Content-Type: "application/json"
+      User-Agent: "Artillery Load Test"
+
+  # Performance thresholds
+  ensure:
+    p95: 2000 # 95% of requests should complete within 2 seconds
+    p99: 5000 # 99% of requests should complete within 5 seconds
+    maxErrorRate: 5 # Maximum 5% error rate
+
+scenarios:
+  # Customer API Load Test
+  - name: "Customer API Load Test"
+    weight: 30
+    requests:
+      - get:
+          url: "/api/v1/customer"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/api/v1/customer-v3"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - post:
+          url: "/api/v1/customer"
+          json:
+            name: "Test Customer {{ $randomString() }}"
+            email: "test{{ $randomNumber(1, 1000) }}@example.com"
+            phone: "+1234567890"
+            address: "Test Address"
+            insuranceType: "Auto"
+            policyNumber: "POL-{{ $randomNumber(1000, 9999) }}"
+          expect:
+            - statusCode: [201, 400]
+            - contentType: json
+
+  # Invoice API Load Test
+  - name: "Invoice API Load Test"
+    weight: 25
+    requests:
+      - get:
+          url: "/api/v1/invoice"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/api/v1/invoice-v3"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - post:
+          url: "/api/v1/invoice"
+          json:
+            customer: "{{ $randomString() }}"
+            invoiceNumber: "INV-{{ $randomNumber(1000, 9999) }}"
+            amount: "{{ $randomNumber(100, 10000) }}"
+            dueDate: "{{ $isoTimestamp() }}"
+          expect:
+            - statusCode: [201, 400]
+            - contentType: json
+
+  # Payment API Load Test
+  - name: "Payment API Load Test"
+    weight: 20
+    requests:
+      - get:
+          url: "/api/v1/payment"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/api/v1/payment-v3"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - post:
+          url: "/api/v1/payment"
+          json:
+            invoice: "{{ $randomString() }}"
+            amount: "{{ $randomNumber(50, 5000) }}"
+            paymentMethod: "card"
+            referenceNumber: "REF-{{ $randomNumber(1000, 9999) }}"
+          expect:
+            - statusCode: [201, 400]
+            - contentType: json
+
+  # Cheque API Load Test
+  - name: "Cheque API Load Test"
+    weight: 15
+    requests:
+      - get:
+          url: "/api/v1/cheques"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/api/v1/cheque-v3"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - post:
+          url: "/api/v1/cheques"
+          json:
+            customer: "{{ $randomString() }}"
+            customerName: "Test Customer"
+            customerPhone: "+1234567890"
+            chequeNumber: "CHQ-{{ $randomNumber(1000, 9999) }}"
+            chequeAmount: "{{ $randomNumber(100, 5000) }}"
+            chequeDate: "{{ $isoTimestamp() }}"
+            bankName: "Test Bank"
+            accountNumber: "ACC-{{ $randomNumber(1000, 9999) }}"
+          expect:
+            - statusCode: [201, 400]
+            - contentType: json
+
+  # Cache Performance Test
+  - name: "Cache Performance Test"
+    weight: 10
+    requests:
+      - get:
+          url: "/api/v1/cache/stats"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/api/v1/customer"
+          headers:
+            X-Skip-Cache: "true"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/api/v1/customer"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+  # Health Check Test
+  - name: "Health Check Test"
+    weight: 5
+    requests:
+      - get:
+          url: "/api/v1/health"
+          expect:
+            - statusCode: 200
+            - contentType: json
+
+      - get:
+          url: "/metrics"
+          expect:
+            - statusCode: 200
+            - contentType: text
+
+  # Authentication Test
+  - name: "Authentication Test"
+    weight: 5
+    requests:
+      - post:
+          url: "/api/v1/user/signin"
+          json:
+            email: "test@example.com"
+            password: "password123"
+          expect:
+            - statusCode: [200, 401]
+            - contentType: json
+
+      - get:
+          url: "/api/v1/user/profile"
+          headers:
+            token: "Bearer {{ $randomString() }}"
+          expect:
+            - statusCode: [200, 401]
+            - contentType: json
+
+# Custom functions for dynamic data
+functions:
+  - function: "generateRandomCustomer"
+    code: |
+      function generateRandomCustomer() {
+        return {
+          name: `Customer ${Math.floor(Math.random() * 1000)}`,
+          email: `customer${Math.floor(Math.random() * 1000)}@example.com`,
+          phone: `+1${Math.floor(Math.random() * 9000000000) + 1000000000}`,
+          address: `${Math.floor(Math.random() * 9999)} Test Street`,
+          insuranceType: ['Auto', 'Home', 'Life', 'Health'][Math.floor(Math.random() * 4)],
+          policyNumber: `POL-${Math.floor(Math.random() * 9000) + 1000}`
+        };
+      }
+
+  - function: "generateRandomInvoice"
+    code: |
+      function generateRandomInvoice() {
+        return {
+          customer: `customer-${Math.floor(Math.random() * 1000)}`,
+          invoiceNumber: `INV-${Math.floor(Math.random() * 9000) + 1000}`,
+          amount: Math.floor(Math.random() * 9000) + 100,
+          dueDate: new Date(Date.now() + Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString()
+        };
+      }
+
+# Performance thresholds
+ensure:
+  p95: 2000
+  p99: 5000
+  maxErrorRate: 5
+  medianResponseTime: 500
+
+# Output configuration
+output:
+  - stdout
+  - json: reports/load-test-report.json
+  - html: reports/load-test-report.html

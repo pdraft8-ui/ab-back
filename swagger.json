@@ -1,0 +1,3864 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Insurance Company Backend API",
+    "description": "Comprehensive API for insurance company management system including customers, vehicles, insurances, invoices, payments, and accident reports",
+    "version": "1.0.0",
+    "contact": {
+      "name": "API Support",
+      "email": "support@insurancecompany.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3002",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.insurancecompany.com",
+      "description": "Production server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string", "minLength": 3, "maxLength": 25 },
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" },
+          "role": { 
+            "type": "string", 
+            "enum": ["admin", "employee", "headOfDepartment", "manager", "agent", "customer"] 
+          },
+          "status": { 
+            "type": "string", 
+            "enum": ["active", "inactive"] 
+          },
+          "department": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" },
+          "address": { "type": "string" },
+          "image": { "type": "string" },
+          "vehicles": { "type": "array", "items": { "$ref": "#/components/schemas/Vehicle" } },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Vehicle": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "plateNumber": { "type": "string" },
+          "model": { "type": "string" },
+          "year": { "type": "number" },
+          "color": { "type": "string" },
+          "image": { "type": "string" },
+          "insurances": { "type": "array", "items": { "$ref": "#/components/schemas/Insurance" } }
+        }
+      },
+      "Insurance": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "type": { "type": "string" },
+          "company": { "type": "string" },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "amount": { "type": "number" },
+          "files": { "type": "array", "items": { "type": "string" } },
+          "checks": { "type": "array", "items": { "$ref": "#/components/schemas/Check" } }
+        }
+      },
+              "Cheque": {
+          "type": "object",
+          "properties": {
+            "_id": { "type": "string" },
+            "amount": { "type": "number" },
+            "date": { "type": "string", "format": "date" },
+            "checkImage": { "type": "string" },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "updatedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "DocumentSettings": {
+          "type": "object",
+          "properties": {
+            "_id": { "type": "string" },
+            "documentType": { 
+              "type": "string", 
+              "enum": ["invoice", "receipt", "contract", "policy", "report"] 
+            },
+            "companyName": { "type": "string" },
+            "companyAddress": { "type": "string" },
+            "companyPhone": { "type": "string" },
+            "companyEmail": { "type": "string" },
+            "companyWebsite": { "type": "string" },
+            "headerLogo": { "type": "string" },
+            "footerLogo": { "type": "string" },
+            "signature": { "type": "string" },
+            "footerText": { "type": "string" },
+            "termsAndConditions": { "type": "string" },
+            "isActive": { "type": "boolean" },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "updatedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+      
+      "Invoice": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "customer": { "type": "string" },
+          "vehicle": { "type": "string" },
+          "insurance": { "type": "string" },
+          "amount": { "type": "number" },
+          "status": { 
+            "type": "string", 
+            "enum": ["pending", "paid", "overdue", "cancelled"] 
+          },
+          "dueDate": { "type": "string", "format": "date" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "invoice": { "type": "string" },
+          "amount": { "type": "number" },
+          "method": { 
+            "type": "string", 
+            "enum": ["cash", "card", "bank_transfer", "cheque"] 
+          },
+          "status": { 
+            "type": "string", 
+            "enum": ["pending", "completed", "failed"] 
+          },
+          "transactionId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Department": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "InsuranceCompany": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "contactInfo": { "type": "string" },
+          "phone": { "type": "string" },
+          "address": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Agent": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "phone": { "type": "string" },
+          "status": { 
+            "type": "string", 
+            "enum": ["active", "inactive"] 
+          },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "title": { "type": "string" },
+          "message": { "type": "string" },
+          "type": { 
+            "type": "string", 
+            "enum": ["info", "warning", "error", "success"] 
+          },
+          "recipient": { "type": "string" },
+          "read": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "AuditLog": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "action": { "type": "string" },
+          "userId": { "type": "string" },
+          "resource": { "type": "string" },
+          "resourceId": { "type": "string" },
+          "details": { "type": "object" },
+          "ipAddress": { "type": "string" },
+          "userAgent": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "AccidentReport": {
+        "type": "object",
+        "properties": {
+          "_id": { "type": "string" },
+          "accidentDate": { "type": "string", "format": "date" },
+          "location": { "type": "string" },
+          "description": { "type": "string" },
+          "damageDetails": { "type": "string" },
+          "insuranceCompany": { "type": "string" },
+          "claimNumber": { "type": "string" },
+          "plateNumber": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "statusCode": { "type": "number" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/v1/user/signin": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "User sign in",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 7 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "token": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/schemas/Error" }
+        }
+      }
+    },
+    "/api/v1/user/profile": {
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get user profile",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/changepassword": {
+      "put": {
+        "tags": ["User Management"],
+        "summary": "Change user password",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["oldPassword", "newPassword"],
+                "properties": {
+                  "oldPassword": { "type": "string" },
+                  "newPassword": { "type": "string", "minLength": 7 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/add": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Add admin user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 3, "maxLength": 25 },
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 7 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Admin user created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/change": {
+      "put": {
+        "tags": ["User Management"],
+        "summary": "Update user information",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "minLength": 3, "maxLength": 25 },
+                  "phone": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User information updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/allEmployee/{depId}": {
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get all employees in department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "depId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employees retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/deleteEmployee/{depId}/{employeeId}": {
+      "delete": {
+        "tags": ["User Management"],
+        "summary": "Delete employee from department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "depId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "employeeId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/addHeadOfDepartmentToDepartment/{id}": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Add head of department to department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 3, "maxLength": 25 },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "password": { "type": "string", "minLength": 7 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Head of department added successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/deleteHeadOfDepartmentFromDepartment/{depId}/{userId}": {
+      "delete": {
+        "tags": ["User Management"],
+        "summary": "Delete head of department from department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "depId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Head of department removed successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/getHeadOfDepartment/{id}": {
+      "get": {
+        "tags": ["User Management"],
+        "summary": "Get head of department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Head of department retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/test-email-configuration": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Test email configuration",
+        "description": "Test Gmail email configuration and send a test email",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "testEmail": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email address to send test email to (optional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email configuration test successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email configuration test successful"
+                    },
+                    "connection": {
+                      "type": "string",
+                      "example": "Connected"
+                    },
+                    "testEmail": {
+                      "type": "object",
+                      "properties": {
+                        "success": { "type": "boolean" },
+                        "messageId": { "type": "string" },
+                        "response": { "type": "string" }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Email configuration test failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email configuration test failed"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "details": {
+                      "type": "string",
+                      "example": "Please check the EMAIL_CONFIGURATION.md file for setup instructions"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/send-email": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Send custom email",
+        "description": "Send a custom email with content provided from the frontend",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["to", "subject"],
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Recipient email address"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Email subject"
+                  },
+                  "html": {
+                    "type": "string",
+                    "description": "HTML content of the email"
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Plain text content of the email"
+                  },
+                  "cc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "CC recipients"
+                  },
+                  "bcc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "BCC recipients"
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "description": "Email attachments"
+                  },
+                  "replyTo": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Reply-to email address"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email sent successfully"
+                    },
+                    "emailId": {
+                      "type": "string",
+                      "description": "Message ID of the sent email"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "to": { "type": "string" },
+                        "subject": { "type": "string" },
+                        "cc": { "type": "array", "items": { "type": "string" } },
+                        "bcc": { "type": "array", "items": { "type": "string" } },
+                        "attachments": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Missing required fields"
+                    },
+                    "required": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "received": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to send email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Failed to send email"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user/send-bulk-emails": {
+      "post": {
+        "tags": ["User Management"],
+        "summary": "Send bulk emails",
+        "description": "Send the same email to multiple recipients",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["emails", "subject"],
+                "properties": {
+                  "emails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "Array of recipient email addresses"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Email subject"
+                  },
+                  "html": {
+                    "type": "string",
+                    "description": "HTML content of the email"
+                  },
+                  "text": {
+                    "type": "string",
+                    "description": "Plain text content of the email"
+                  },
+                  "cc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "CC recipients"
+                  },
+                  "bcc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "description": "BCC recipients"
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "description": "Email attachments"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bulk email operation completed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bulk email operation completed"
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "total": { "type": "integer" },
+                        "successful": { "type": "integer" },
+                        "failed": { "type": "integer" }
+                      }
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": { "type": "string" },
+                          "success": { "type": "boolean" },
+                          "messageId": { "type": "string" },
+                          "error": { "type": "string" }
+                        }
+                      }
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Missing required fields"
+                    },
+                    "invalidEmails": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to send bulk emails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Failed to send bulk emails"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/addCustomer": {
+      "post": {
+        "tags": ["Customers"],
+        "summary": "Add new customer",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "address": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Customer" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/allCustomer": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get all customers",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customers retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "customers": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Customer" }
+                    },
+                    "total": { "type": "integer" },
+                    "page": { "type": "integer" },
+                    "pages": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/findCustomer/{id}": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get customer by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Customer" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/updateCustomer/{id}": {
+      "put": {
+        "tags": ["Customers"],
+        "summary": "Update customer",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "address": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Customer" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/deleteCustomer/{id}": {
+      "delete": {
+        "tags": ["Customers"],
+        "summary": "Delete customer",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/customer/get_count": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get total customer count",
+        "responses": {
+          "200": {
+            "description": "Customer count retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": { "type": "number" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/getCustomerByMonth": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get customers by month",
+        "responses": {
+          "200": {
+            "description": "Customer data by month retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": { "type": "array" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/addVehicle/{customerId}": {
+      "post": {
+        "tags": ["Vehicles"],
+        "summary": "Add vehicle to customer",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plateNumber": { "type": "string" },
+                  "model": { "type": "string" },
+                  "year": { "type": "number" },
+                  "color": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vehicle added successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vehicle" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/getCustomerVehicles/{id}": {
+      "get": {
+        "tags": ["Customers"],
+        "summary": "Get customer vehicles",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer vehicles retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Vehicle" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/updatevic/{customerId}/{vehicleId}": {
+      "patch": {
+        "tags": ["Vehicles"],
+        "summary": "Update vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plateNumber": { "type": "string" },
+                  "model": { "type": "string" },
+                  "year": { "type": "number" },
+                  "color": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicle updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vehicle" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/del/{customerId}/{vehicleId}": {
+      "delete": {
+        "tags": ["Vehicles"],
+        "summary": "Remove vehicle from customer",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle removed successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/vehicle/addVehicle": {
+      "post": {
+        "tags": ["Vehicles"],
+        "summary": "Add new vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plateNumber": { "type": "string" },
+                  "model": { "type": "string" },
+                  "year": { "type": "number" },
+                  "color": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Vehicle created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vehicle" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vehicle/allVehicles": {
+      "get": {
+        "tags": ["Vehicles"],
+        "summary": "Get all vehicles",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Vehicles retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Vehicle" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vehicle/findVehicle/{id}": {
+      "get": {
+        "tags": ["Vehicles"],
+        "summary": "Get vehicle by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vehicle" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vehicle/updateVehicle/{id}": {
+      "put": {
+        "tags": ["Vehicles"],
+        "summary": "Update vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plateNumber": { "type": "string" },
+                  "model": { "type": "string" },
+                  "year": { "type": "number" },
+                  "color": { "type": "string" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicle updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Vehicle" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vehicle/deleteVehicle/{id}": {
+      "delete": {
+        "tags": ["Vehicles"],
+        "summary": "Delete vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/customer/addInsurance/{customerId}/{vehicleId}": {
+      "post": {
+        "tags": ["Insurance"],
+        "summary": "Add insurance to vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "insuranceFiles": { 
+                    "type": "array", 
+                    "items": { "type": "string", "format": "binary" } 
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Insurance added successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Insurance" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/removeInsuranceFromVehicle/{customerId}/{vehicleId}/{insuranceId}": {
+      "delete": {
+        "tags": ["Insurance"],
+        "summary": "Remove insurance from vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "insuranceId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insurance removed successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/customer/get/{customerId}/{vehicleId}": {
+      "get": {
+        "tags": ["Insurance"],
+        "summary": "Get insurances for vehicle",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "vehicleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insurances retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Insurance" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/insurances/all": {
+      "get": {
+        "tags": ["Insurance"],
+        "summary": "Get all vehicle insurances",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "All insurances retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Insurance" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/allInsurancesData": {
+      "get": {
+        "tags": ["Insurance"],
+        "summary": "Get all insurances data",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "All insurances data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Insurance" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/insurances/{customerId}": {
+      "get": {
+        "tags": ["Insurance"],
+        "summary": "Get customer insurances",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer insurances retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Insurance" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/addInsurance/{customerId}": {
+      "post": {
+        "tags": ["Insurance"],
+        "summary": "Add customer insurance",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "insuranceFiles": { 
+                    "type": "array", 
+                    "items": { "type": "string", "format": "binary" } 
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer insurance added successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Insurance" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/allInsurances/{customerId}": {
+      "get": {
+        "tags": ["Insurance"],
+        "summary": "Get all customer insurances",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All customer insurances retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Insurance" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/insurance/{insuranceId}": {
+      "get": {
+        "tags": ["Insurance"],
+        "summary": "Get insurance by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "insuranceId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insurance retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Insurance" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/insurance/{insuranceId}": {
+      "patch": {
+        "tags": ["Insurance"],
+        "summary": "Update insurance by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "insuranceId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "insuranceFiles": { 
+                    "type": "array", 
+                    "items": { "type": "string", "format": "binary" } 
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insurance updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Insurance" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customer/insurance/{insuranceId}": {
+      "delete": {
+        "tags": ["Insurance"],
+        "summary": "Delete insurance by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "insuranceId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insurance deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/cheque/addCheque": {
+      "post": {
+        "tags": ["Cheques"],
+        "summary": "Add new cheque",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": { "type": "number" },
+                  "date": { "type": "string", "format": "date" },
+                  "checkImage": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cheque added successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Cheque" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cheque/allCheques": {
+      "get": {
+        "tags": ["Cheques"],
+        "summary": "Get all cheques",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Cheques retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Cheque" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cheque/findCheque/{id}": {
+      "get": {
+        "tags": ["Cheques"],
+        "summary": "Get cheque by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cheque retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Cheque" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cheque/updateCheque/{id}": {
+      "put": {
+        "tags": ["Cheques"],
+        "summary": "Update cheque",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": { "type": "number" },
+                  "date": { "type": "string", "format": "date" },
+                  "checkImage": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cheque updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Cheque" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cheque/deleteCheque/{id}": {
+      "delete": {
+        "tags": ["Cheques"],
+        "summary": "Delete cheque",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cheque deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/invoice/create": {
+      "post": {
+        "tags": ["Invoices"],
+        "summary": "Create new invoice",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["customer", "vehicle", "insurance", "amount"],
+                "properties": {
+                  "customer": { "type": "string" },
+                  "vehicle": { "type": "string" },
+                  "insurance": { "type": "string" },
+                  "amount": { "type": "number" },
+                  "dueDate": { "type": "string", "format": "date" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Invoice created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Invoice" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoice/allInvoices": {
+      "get": {
+        "tags": ["Invoices"],
+        "summary": "Get all invoices",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Invoices retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Invoice" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoice/findInvoice/{id}": {
+      "get": {
+        "tags": ["Invoices"],
+        "summary": "Get invoice by ID with customer data and payment history",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Invoice ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice retrieved successfully with customer data and payment history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "invoice": {
+                      "type": "object",
+                      "properties": {
+                        "_id": { "type": "string" },
+                        "invoiceNumber": { "type": "string" },
+                        "customer": {
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string" },
+                            "first_name": { "type": "string" },
+                            "last_name": { "type": "string" },
+                            "phone_number": { "type": "string" },
+                            "email": { "type": "string" },
+                            "city": { "type": "string" }
+                          }
+                        },
+                        "vehicle": {
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string" },
+                            "plateNumber": { "type": "string" },
+                            "model": { "type": "string" },
+                            "type": { "type": "string" },
+                            "color": { "type": "string" },
+                            "insurance": {
+                              "type": "array",
+                              "items": { "type": "object" }
+                            }
+                          }
+                        },
+                        "insurancePolicy": { "type": "object" },
+                        "invoiceDate": { "type": "string", "format": "date-time" },
+                        "dueDate": { "type": "string", "format": "date-time" },
+                        "status": { 
+                          "type": "string", 
+                          "enum": ["Pending", "Partially Paid", "Paid", "Overdue"] 
+                        },
+                        "totalAmount": { "type": "number" },
+                        "balanceDue": { "type": "number" },
+                        "paidAmount": { "type": "number" },
+                        "paidPercentage": { "type": "number" },
+                        "description": { "type": "string" },
+                        "notes": { "type": "string" },
+                        "createdBy": {
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string" },
+                            "name": { "type": "string" }
+                          }
+                        },
+                        "updatedBy": {
+                          "type": "object",
+                          "properties": {
+                            "_id": { "type": "string" },
+                            "name": { "type": "string" }
+                          }
+                        },
+                        "createdAt": { "type": "string", "format": "date-time" },
+                        "updatedAt": { "type": "string", "format": "date-time" }
+                      }
+                    },
+                    "payments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": { "type": "string" },
+                          "amount": { "type": "number" },
+                          "paymentMethod": { "type": "string" },
+                          "paymentDate": { "type": "string", "format": "date-time" },
+                          "status": { "type": "string" },
+                          "createdBy": {
+                            "type": "object",
+                            "properties": {
+                              "_id": { "type": "string" },
+                              "name": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invoice not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoice/updateInvoice/{id}": {
+      "put": {
+        "tags": ["Invoices"],
+        "summary": "Update invoice",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer": { "type": "string" },
+                  "vehicle": { "type": "string" },
+                  "insurance": { "type": "string" },
+                  "amount": { "type": "number" },
+                  "status": { 
+                    "type": "string", 
+                    "enum": ["pending", "paid", "overdue", "cancelled"] 
+                  },
+                  "dueDate": { "type": "string", "format": "date" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoice updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Invoice" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invoice/deleteInvoice/{id}": {
+      "delete": {
+        "tags": ["Invoices"],
+        "summary": "Delete invoice",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoice deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/payment/create": {
+      "post": {
+        "tags": ["Payments"],
+        "summary": "Create new payment",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["invoice", "amount", "method"],
+                "properties": {
+                  "invoice": { "type": "string" },
+                  "amount": { "type": "number" },
+                  "method": { 
+                    "type": "string", 
+                    "enum": ["cash", "card", "bank_transfer", "cheque"] 
+                  },
+                  "transactionId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Payment" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/allPayments": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get all payments",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Payments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Payment" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/findPayment/{id}": {
+      "get": {
+        "tags": ["Payments"],
+        "summary": "Get payment by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Payment" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/updatePayment/{id}": {
+      "put": {
+        "tags": ["Payments"],
+        "summary": "Update payment",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "invoice": { "type": "string" },
+                  "amount": { "type": "number" },
+                  "method": { 
+                    "type": "string", 
+                    "enum": ["cash", "card", "bank_transfer", "cheque"] 
+                  },
+                  "status": { 
+                    "type": "string", 
+                    "enum": ["pending", "completed", "failed"] 
+                  },
+                  "transactionId": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Payment" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/payment/deletePayment/{id}": {
+      "delete": {
+        "tags": ["Payments"],
+        "summary": "Delete payment",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/department/addDepartment": {
+      "post": {
+        "tags": ["Departments"],
+        "summary": "Add new department",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Department created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Department" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/department/allDepartments": {
+      "get": {
+        "tags": ["Departments"],
+        "summary": "Get all departments",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Departments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Department" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/department/findDepartment/{id}": {
+      "get": {
+        "tags": ["Departments"],
+        "summary": "Get department by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Department retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Department" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/department/updateDepartment/{id}": {
+      "put": {
+        "tags": ["Departments"],
+        "summary": "Update department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "description": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Department updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Department" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/department/deleteDepartment/{id}": {
+      "delete": {
+        "tags": ["Departments"],
+        "summary": "Delete department",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Department deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/insuranceCompany/addInsuranceCompany": {
+      "post": {
+        "tags": ["Insurance Companies"],
+        "summary": "Add new insurance company",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "contactInfo": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "address": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Insurance company created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InsuranceCompany" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/insuranceCompany/allInsuranceCompanies": {
+      "get": {
+        "tags": ["Insurance Companies"],
+        "summary": "Get all insurance companies",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Insurance companies retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/InsuranceCompany" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/insuranceCompany/findInsuranceCompany/{id}": {
+      "get": {
+        "tags": ["Insurance Companies"],
+        "summary": "Get insurance company by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insurance company retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InsuranceCompany" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/insuranceCompany/updateInsuranceCompany/{id}": {
+      "put": {
+        "tags": ["Insurance Companies"],
+        "summary": "Update insurance company",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "contactInfo": { "type": "string" },
+                  "phone": { "type": "string" },
+                  "address": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insurance company updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InsuranceCompany" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/insuranceCompany/deleteInsuranceCompany/{id}": {
+      "delete": {
+        "tags": ["Insurance Companies"],
+        "summary": "Delete insurance company",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insurance company deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/agent/addAgent": {
+      "post": {
+        "tags": ["Agents"],
+        "summary": "Add new agent",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agent created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Agent" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/allAgents": {
+      "get": {
+        "tags": ["Agents"],
+        "summary": "Get all agents",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Agents retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Agent" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/findAgent/{id}": {
+      "get": {
+        "tags": ["Agents"],
+        "summary": "Get agent by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Agent" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/updateAgent/{id}": {
+      "put": {
+        "tags": ["Agents"],
+        "summary": "Update agent",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "phone": { "type": "string" },
+                  "status": { 
+                    "type": "string", 
+                    "enum": ["active", "inactive"] 
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Agent" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/agent/deleteAgent/{id}": {
+      "delete": {
+        "tags": ["Agents"],
+        "summary": "Delete agent",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/notification/addNotification": {
+      "post": {
+        "tags": ["Notifications"],
+        "summary": "Add new notification",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["title", "message", "recipient"],
+                "properties": {
+                  "title": { "type": "string" },
+                  "message": { "type": "string" },
+                  "type": { 
+                    "type": "string", 
+                    "enum": ["info", "warning", "error", "success"] 
+                  },
+                  "recipient": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notification created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Notification" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification/allNotifications": {
+      "get": {
+        "tags": ["Notifications"],
+        "summary": "Get all notifications",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Notifications retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Notification" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification/findNotification/{id}": {
+      "get": {
+        "tags": ["Notifications"],
+        "summary": "Get notification by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Notification" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification/updateNotification/{id}": {
+      "put": {
+        "tags": ["Notifications"],
+        "summary": "Update notification",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "message": { "type": "string" },
+                  "type": { 
+                    "type": "string", 
+                    "enum": ["info", "warning", "error", "success"] 
+                  },
+                  "recipient": { "type": "string" },
+                  "read": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Notification" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notification/deleteNotification/{id}": {
+      "delete": {
+        "tags": ["Notifications"],
+        "summary": "Delete notification",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/auditLog/allAuditLogs": {
+      "get": {
+        "tags": ["Audit Logs"],
+        "summary": "Get all audit logs",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Audit logs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AuditLog" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auditLog/findAuditLog/{id}": {
+      "get": {
+        "tags": ["Audit Logs"],
+        "summary": "Get audit log by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Audit log retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuditLog" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/TakafulAccidentReport/addTakafulAccidentReport": {
+      "post": {
+        "tags": ["Accident Reports"],
+        "summary": "Add Takaful accident report",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accidentDate", "location", "description"],
+                "properties": {
+                  "accidentDate": { "type": "string", "format": "date" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "damageDetails": { "type": "string" },
+                  "insuranceCompany": { "type": "string" },
+                  "claimNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Takaful accident report created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/TakafulAccidentReport/showTakafulAccidentReport": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get all Takaful accident reports",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Takaful accident reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AccidentReport" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/TakafulAccidentReport/delete/{id}": {
+      "delete": {
+        "tags": ["Accident Reports"],
+        "summary": "Delete Takaful accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accident report deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/TrustAccidentReport/addTrustAccidentReport": {
+      "post": {
+        "tags": ["Accident Reports"],
+        "summary": "Add Trust accident report",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accidentDate", "location", "description"],
+                "properties": {
+                  "accidentDate": { "type": "string", "format": "date" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "damageDetails": { "type": "string" },
+                  "insuranceCompany": { "type": "string" },
+                  "claimNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Trust accident report created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/TrustAccidentReport/showTrustAccidentReport": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get all Trust accident reports",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Trust accident reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AccidentReport" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/TrustAccidentReport/deleteTrustAccidentReport/{id}": {
+      "delete": {
+        "tags": ["Accident Reports"],
+        "summary": "Delete Trust accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trust accident report deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/AhliaAccidentReport/addAhliaAccidentReport": {
+      "post": {
+        "tags": ["Accident Reports"],
+        "summary": "Add Al-Ahlia accident report",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accidentDate", "location", "description"],
+                "properties": {
+                  "accidentDate": { "type": "string", "format": "date" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "damageDetails": { "type": "string" },
+                  "insuranceCompany": { "type": "string" },
+                  "claimNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Al-Ahlia accident report created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/AhliaAccidentReport/showAhliaAccidentReport": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get all Al-Ahlia accident reports",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Al-Ahlia accident reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AccidentReport" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/AhliaAccidentReport/deleteAhliaAccidentReport/{id}": {
+      "delete": {
+        "tags": ["Accident Reports"],
+        "summary": "Delete Al-Ahlia accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Al-Ahlia accident report deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/PlestineAccidentReport/addPalestineAccidentReport": {
+      "post": {
+        "tags": ["Accident Reports"],
+        "summary": "Add Palestine accident report",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accidentDate", "location", "description"],
+                "properties": {
+                  "accidentDate": { "type": "string", "format": "date" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "damageDetails": { "type": "string" },
+                  "insuranceCompany": { "type": "string" },
+                  "claimNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Palestine accident report created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/PlestineAccidentReport/showPalestineAccidentReport": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get all Palestine accident reports",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Palestine accident reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AccidentReport" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/PlestineAccidentReport/deletePalestineAccidentReport/{id}": {
+      "delete": {
+        "tags": ["Accident Reports"],
+        "summary": "Delete Palestine accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Palestine accident report deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/Al_MashreqAccidentReport/addAl_MashreqAccidentReport": {
+      "post": {
+        "tags": ["Accident Reports"],
+        "summary": "Add Al-Mashreq accident report",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accidentDate", "location", "description"],
+                "properties": {
+                  "accidentDate": { "type": "string", "format": "date" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "damageDetails": { "type": "string" },
+                  "insuranceCompany": { "type": "string" },
+                  "claimNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Al-Mashreq accident report created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Al_MashreqAccidentReport/showAl_MashreqAccidentReport": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get all Al-Mashreq accident reports",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Al-Mashreq accident reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AccidentReport" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/Al_MashreqAccidentReport/deleteAl_MashreqAccidentReport/{id}": {
+      "delete": {
+        "tags": ["Accident Reports"],
+        "summary": "Delete Al-Mashreq accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Al-Mashreq accident report deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/HolyLand/add/{plateNumber}": {
+      "post": {
+        "tags": ["Accident Reports"],
+        "summary": "Add Holy Lands accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "plateNumber",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["accidentDate", "location", "description"],
+                "properties": {
+                  "accidentDate": { "type": "string", "format": "date" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "damageDetails": { "type": "string" },
+                  "insuranceCompany": { "type": "string" },
+                  "claimNumber": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Holy Lands accident report created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/HolyLand/all": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get all Holy Lands accident reports",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Holy Lands accident reports retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AccidentReport" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/HolyLand/allById/{id}": {
+      "get": {
+        "tags": ["Accident Reports"],
+        "summary": "Get Holy Lands accident report by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Holy Lands accident report retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccidentReport" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/HolyLand/delete/{id}": {
+      "delete": {
+        "tags": ["Accident Reports"],
+        "summary": "Delete Holy Lands accident report",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Holy Lands accident report deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/road/addRoad": {
+      "post": {
+        "tags": ["Road Services"],
+        "summary": "Add new road service",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["serviceType", "location", "description"],
+                "properties": {
+                  "serviceType": { "type": "string" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "customer": { "type": "string" },
+                  "vehicle": { "type": "string" },
+                  "status": { 
+                    "type": "string", 
+                    "enum": ["pending", "in_progress", "completed", "cancelled"] 
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Road service created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/road/allRoadServices": {
+      "get": {
+        "tags": ["Road Services"],
+        "summary": "Get all road services",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Road services retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/road/findRoadService/{id}": {
+      "get": {
+        "tags": ["Road Services"],
+        "summary": "Get road service by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Road service retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/road/updateRoadService/{id}": {
+      "put": {
+        "tags": ["Road Services"],
+        "summary": "Update road service",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "serviceType": { "type": "string" },
+                  "location": { "type": "string" },
+                  "description": { "type": "string" },
+                  "customer": { "type": "string" },
+                  "vehicle": { "type": "string" },
+                  "status": { 
+                    "type": "string", 
+                    "enum": ["pending", "in_progress", "completed", "cancelled"] 
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Road service updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/road/deleteRoadService/{id}": {
+      "delete": {
+        "tags": ["Road Services"],
+        "summary": "Delete road service",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Road service deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/add": {
+      "post": {
+        "tags": ["Document Settings"],
+        "summary": "Add document settings",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["documentType"],
+                "properties": {
+                  "documentType": { 
+                    "type": "string", 
+                    "enum": ["invoice", "receipt", "contract", "policy", "report"] 
+                  },
+                  "companyName": { "type": "string" },
+                  "companyAddress": { "type": "string" },
+                  "companyPhone": { "type": "string" },
+                  "companyEmail": { "type": "string" },
+                  "companyWebsite": { "type": "string" },
+                  "footerText": { "type": "string" },
+                  "termsAndConditions": { "type": "string" },
+                  "isActive": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Document settings created successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DocumentSettings" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings": {
+      "get": {
+        "tags": ["Document Settings"],
+        "summary": "Get all document settings",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": { "type": "boolean" },
+            "description": "Filter by active status"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document settings retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "settings": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/DocumentSettings" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/id/{id}": {
+      "get": {
+        "tags": ["Document Settings"],
+        "summary": "Get document settings by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Document settings ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document settings retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "settings": { "$ref": "#/components/schemas/DocumentSettings" }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document settings not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{documentType}": {
+      "get": {
+        "tags": ["Document Settings"],
+        "summary": "Get document settings by type",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "documentType",
+            "in": "path",
+            "required": true,
+            "schema": { 
+              "type": "string", 
+              "enum": ["invoice", "receipt", "contract", "policy", "report"] 
+            },
+            "description": "Type of document to get settings for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document settings retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "settings": { "$ref": "#/components/schemas/DocumentSettings" }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document settings not found for the specified type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{id}": {
+      "put": {
+        "tags": ["Document Settings"],
+        "summary": "Update document settings",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "companyName": { "type": "string" },
+                  "companyAddress": { "type": "string" },
+                  "companyPhone": { "type": "string" },
+                  "companyEmail": { "type": "string" },
+                  "companyWebsite": { "type": "string" },
+                  "footerText": { "type": "string" },
+                  "termsAndConditions": { "type": "string" },
+                  "isActive": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document settings updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DocumentSettings" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{id}": {
+      "delete": {
+        "tags": ["Document Settings"],
+        "summary": "Delete document settings",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document settings deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{id}/toggle": {
+      "patch": {
+        "tags": ["Document Settings"],
+        "summary": "Toggle document settings status",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Document settings status toggled successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{documentType}/header-logo": {
+      "post": {
+        "tags": ["Document Settings"],
+        "summary": "Upload header logo",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "documentType",
+            "in": "path",
+            "required": true,
+            "schema": { 
+              "type": "string", 
+              "enum": ["invoice", "receipt", "contract", "policy", "report"] 
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "logo": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Header logo uploaded successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{documentType}/footer-logo": {
+      "post": {
+        "tags": ["Document Settings"],
+        "summary": "Upload footer logo",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "documentType",
+            "in": "path",
+            "required": true,
+            "schema": { 
+              "type": "string", 
+              "enum": ["invoice", "receipt", "contract", "policy", "report"] 
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "logo": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Footer logo uploaded successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/document-settings/{documentType}/signature": {
+      "post": {
+        "tags": ["Document Settings"],
+        "summary": "Upload signature",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "documentType",
+            "in": "path",
+            "required": true,
+            "schema": { 
+              "type": "string", 
+              "enum": ["invoice", "receipt", "contract", "policy", "report"] 
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "signature": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signature uploaded successfully"
+          }
+        }
+      }
+    }
+  }
+} 

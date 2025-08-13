@@ -1,0 +1,1051 @@
+{
+  "info": {
+    "name": "Insurance Company Backend API",
+    "description": "Comprehensive API collection for insurance company management system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3002",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Sign In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "signin"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Send Reset Code",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/sendcode",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "sendcode"]
+            }
+          }
+        },
+        {
+          "name": "Forget Password",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"code\": \"123456\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/forgetpassword",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "forgetpassword"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"oldpassword123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/changepassword",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "changepassword"]
+            }
+          }
+        },
+        {
+          "name": "Update User Information",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/change",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "change"]
+            }
+          }
+        },
+        {
+          "name": "Add Employee",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/addEmployee/:departmentId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "addEmployee", ":departmentId"],
+              "variable": [
+                {
+                  "key": "departmentId",
+                  "value": "department_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Employees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/allEmployee/:departmentId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "user", "allEmployee", ":departmentId"],
+              "variable": [
+                {
+                  "key": "departmentId",
+                  "value": "department_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Add Customer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "John Customer",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "john@customer.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "+1234567890",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "123 Main St, City, Country",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/addCustomer",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "addCustomer"]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/allCustomer?page=1&limit=10&search=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "allCustomer"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/findCustomer/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "findCustomer", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Updated Customer Name",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "updated@customer.com",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "+1234567890",
+                  "type": "text"
+                },
+                {
+                  "key": "address",
+                  "value": "Updated Address",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/updateCustomer/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "updateCustomer", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/deleteCustomer/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "deleteCustomer", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Add Vehicle to Customer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "plateNumber",
+                  "value": "ABC123",
+                  "type": "text"
+                },
+                {
+                  "key": "model",
+                  "value": "Toyota Camry",
+                  "type": "text"
+                },
+                {
+                  "key": "year",
+                  "value": "2020",
+                  "type": "text"
+                },
+                {
+                  "key": "color",
+                  "value": "Blue",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/addVehicle/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "addVehicle", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/getCustomerVehicles/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "getCustomerVehicles", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plateNumber\": \"XYZ789\",\n  \"model\": \"Honda Civic\",\n  \"year\": 2021,\n  \"color\": \"Red\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/updatevic/:customerId/:vehicleId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "updatevic", ":customerId", ":vehicleId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                },
+                {
+                  "key": "vehicleId",
+                  "value": "vehicle_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remove Vehicle",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/del/:customerId/:vehicleId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "del", ":customerId", ":vehicleId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                },
+                {
+                  "key": "vehicleId",
+                  "value": "vehicle_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Insurance",
+      "item": [
+        {
+          "name": "Add Insurance to Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "insuranceFiles",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/addInsurance/:customerId/:vehicleId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "addInsurance", ":customerId", ":vehicleId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                },
+                {
+                  "key": "vehicleId",
+                  "value": "vehicle_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicle Insurances",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/get/:customerId/:vehicleId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "get", ":customerId", ":vehicleId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                },
+                {
+                  "key": "vehicleId",
+                  "value": "vehicle_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Customer Insurance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "insuranceFiles",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/addInsurance/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "addInsurance", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Insurances",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/insurances/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "insurances", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Invoices",
+      "item": [
+        {
+          "name": "Create Invoice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"customer_id_here\",\n  \"vehicle\": \"vehicle_id_here\",\n  \"insurance\": \"insurance_id_here\",\n  \"amount\": 1500.00,\n  \"dueDate\": \"2024-12-31\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get All Invoices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/all?page=1&limit=10&status=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", "all"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/:invoiceId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", ":invoiceId"],
+              "variable": [
+                {
+                  "key": "invoiceId",
+                  "value": "invoice_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Invoice",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 2000.00,\n  \"dueDate\": \"2024-12-31\",\n  \"status\": \"pending\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/:invoiceId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", ":invoiceId"],
+              "variable": [
+                {
+                  "key": "invoiceId",
+                  "value": "invoice_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Invoice",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/:invoiceId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", ":invoiceId"],
+              "variable": [
+                {
+                  "key": "invoiceId",
+                  "value": "invoice_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Invoices by Customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/customer/:customerId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", "customer", ":customerId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Invoice Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoice/stats/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "invoice", "stats", "overview"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Create Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoice\": \"invoice_id_here\",\n  \"amount\": 1500.00,\n  \"method\": \"card\",\n  \"transactionId\": \"txn_123456789\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payment/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payment", "create"]
+            }
+          }
+        },
+        {
+          "name": "Get All Payments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payment/all?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payment", "all"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Payment by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/payment/:paymentId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "payment", ":paymentId"],
+              "variable": [
+                {
+                  "key": "paymentId",
+                  "value": "payment_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cheques",
+      "item": [
+        {
+          "name": "Upload Cheque Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "chequeImage",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/cheques/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "cheques", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Add Check to Insurance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "checkImage",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/add/:customerId/:vehicleId/:insuranceId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "add", ":customerId", ":vehicleId", ":insuranceId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                },
+                {
+                  "key": "vehicleId",
+                  "value": "vehicle_id_here"
+                },
+                {
+                  "key": "insuranceId",
+                  "value": "insurance_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Insurance Checks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/customer/getCheck/:customerId/:vehicleId/:insuranceId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "customer", "getCheck", ":customerId", ":vehicleId", ":insuranceId"],
+              "variable": [
+                {
+                  "key": "customerId",
+                  "value": "customer_id_here"
+                },
+                {
+                  "key": "vehicleId",
+                  "value": "vehicle_id_here"
+                },
+                {
+                  "key": "insuranceId",
+                  "value": "insurance_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "Get All Departments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/department/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "department", "all"]
+            }
+          }
+        },
+        {
+          "name": "Add Department",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sales Department\",\n  \"description\": \"Handles all sales operations\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/department/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "department", "add"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Insurance Companies",
+      "item": [
+        {
+          "name": "Get All Insurance Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/company/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "company", "all"]
+            }
+          }
+        },
+        {
+          "name": "Add Insurance Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"ABC Insurance Co.\",\n  \"contactInfo\": \"contact@abcinsurance.com\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/company/add",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "company", "add"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notification/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notification", "all"]
+            }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"read\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notification/:notificationId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notification", ":notificationId"],
+              "variable": [
+                {
+                  "key": "notificationId",
+                  "value": "notification_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/AuditLog/all?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "AuditLog", "all"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+} 
+} 
