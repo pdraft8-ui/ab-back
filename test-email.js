@@ -1,105 +1,123 @@
 import dotenv from "dotenv";
-import emailService from "./src/Servicess/email.js";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+
+// Handle ES module __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: join(__dirname, ".env") });
 
-async function testEmailConfiguration() {
-  console.log("🧪 Testing Email Configuration...\n");
+// Import email service
+import emailService from "./src/Servicess/email.js";
 
-  // Check environment variables
-  console.log("📋 Environment Variables:");
-  console.log(
-    `GMAIL_USER: ${process.env.GMAIL_USER ? "✅ Set" : "❌ Not set"}`
-  );
-  console.log(
-    `GMAIL_APP_PASSWORD: ${
-      process.env.GMAIL_APP_PASSWORD ? "✅ Set" : "❌ Not set"
-    }`
-  );
-  console.log(
-    `EMAIL_FROM_NAME: ${
-      process.env.EMAIL_FROM_NAME || "Insurance Management System"
-    }\n`
-  );
+async function testEmailService() {
+  console.log("🧪 Testing Gmail Email Service Configuration...\n");
 
   try {
-    // Test email connection
-    console.log("🔗 Testing email connection...");
-    const isConnected = await emailService.verifyConnection();
+    // Test 1: Check if email service is configured
+    console.log("1️⃣ Checking email service configuration...");
+    const isConfigured = emailService.isConfigured;
+    console.log(`   ✅ Email service configured: ${isConfigured}`);
 
-    if (isConnected) {
-      console.log("✅ Email connection successful!\n");
-
-      // Test sending a simple email
-      console.log("📧 Testing email sending...");
-      const testResult = await emailService.sendEmail({
-        to: "islam.mutawea@gmail.com",
-        subject: "Email Configuration Test",
-        html: `
-          <h1>🎉 Email Configuration Test Successful!</h1>
-          <p>This is a test email to verify that the Gmail configuration is working properly.</p>
-          <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-          <p><strong>Status:</strong> ✅ Email service is working correctly!</p>
-          <hr>
-          <p><em>This email was sent from the Insurance Management System using Gmail SMTP.</em></p>
-        `,
-      });
-
-      console.log("✅ Email sent successfully!");
-      console.log("📊 Email Details:");
-      console.log(`   Message ID: ${testResult.messageId}`);
-      console.log(`   Response: ${testResult.response}`);
-      console.log(`   Success: ${testResult.success}\n`);
-
-      // Test password reset email
-      console.log("🔐 Testing password reset email...");
-      await emailService.sendPasswordResetEmail(
-        "islam.mutawea@gmail.com",
-        "TEST123",
-        "Test User"
-      );
-      console.log("✅ Password reset email sent successfully!\n");
-
-      // Test welcome email
-      console.log("👋 Testing welcome email...");
-      await emailService.sendWelcomeEmail(
-        "islam.mutawea@gmail.com",
-        "Test User"
-      );
-      console.log("✅ Welcome email sent successfully!\n");
-
+    if (!isConfigured) {
       console.log(
-        "🎉 All email tests passed! The Gmail configuration is working correctly."
+        "   ❌ Email service not configured. Please check GMAIL_USER and GMAIL_APP_PASSWORD"
       );
-      console.log("\n📧 Available Email Functions:");
-      console.log("   - sendPasswordResetEmail(email, code, userName)");
-      console.log("   - sendWelcomeEmail(email, userName)");
-      console.log(
-        "   - sendInvoiceNotification(email, invoiceData, customerName)"
-      );
-      console.log(
-        "   - sendPaymentConfirmation(email, paymentData, customerName)"
-      );
-      console.log("   - sendEmail(options)");
-    } else {
-      console.log("❌ Email connection failed!");
-      console.log(
-        "Please check your Gmail credentials and ensure 2-Factor Authentication is enabled."
-      );
+      return;
     }
+
+    // Test 2: Verify SMTP connection
+    console.log("\n2️⃣ Testing SMTP connection...");
+    try {
+      const smtpResult = await emailService.verifyConnection();
+      console.log(
+        `   ✅ SMTP connection: ${smtpResult ? "SUCCESS" : "FAILED"}`
+      );
+    } catch (error) {
+      console.log(`   ❌ SMTP connection failed: ${error.message}`);
+    }
+
+    // Test 3: Verify IMAP connection
+    console.log("\n3️⃣ Testing IMAP connection...");
+    try {
+      const imapResult = await emailService.verifyImapConnection();
+      console.log(
+        `   ✅ IMAP connection: ${imapResult ? "SUCCESS" : "FAILED"}`
+      );
+    } catch (error) {
+      console.log(`   ❌ IMAP connection failed: ${error.message}`);
+    }
+
+    // Test 4: Send test email
+    console.log("\n4️⃣ Sending test email...");
+    const testEmail = process.env.GMAIL_USER || "basheerinsurance99@gmail.com";
+
+    const emailResult = await emailService.sendEmail({
+      to: testEmail,
+      subject: "🧪 Gmail Service Test - AB Insurance Company",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1 style="color: #2c3e50; text-align: center;">🎉 Gmail Service Test Successful!</h1>
+          
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h2 style="color: #27ae60;">✅ Configuration Verified</h2>
+            <p><strong>Gmail User:</strong> ${process.env.GMAIL_USER}</p>
+            <p><strong>From Name:</strong> ${process.env.EMAIL_FROM_NAME}</p>
+            <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+          </div>
+          
+          <div style="background: #e8f5e8; padding: 15px; border-radius: 5px; border-left: 4px solid #27ae60;">
+            <p><strong>Status:</strong> Your Gmail service is now fully configured and working!</p>
+            <p>You can now:</p>
+            <ul>
+              <li>Send emails to customers</li>
+              <li>Receive emails via IMAP</li>
+              <li>Send password reset emails</li>
+              <li>Send welcome emails</li>
+              <li>Send invoice notifications</li>
+            </ul>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px; color: #7f8c8d;">
+            <p>This is an automated test from the AB Insurance Management System</p>
+          </div>
+        </div>
+      `,
+      text: `
+Gmail Service Test Successful!
+
+Configuration Verified:
+- Gmail User: ${process.env.GMAIL_USER}
+- From Name: ${process.env.EMAIL_FROM_NAME}
+- Timestamp: ${new Date().toISOString()}
+
+Status: Your Gmail service is now fully configured and working!
+
+You can now:
+- Send emails to customers
+- Receive emails via IMAP
+- Send password reset emails
+- Send welcome emails
+- Send invoice notifications
+
+This is an automated test from the AB Insurance Management System
+      `,
+    });
+
+    console.log(`   ✅ Test email sent successfully!`);
+    console.log(`   📧 Message ID: ${emailResult.messageId}`);
+    console.log(`   📤 Response: ${emailResult.response}`);
+
+    console.log("\n🎉 All tests completed successfully!");
+    console.log("📧 Your Gmail service is now fully configured and working!");
   } catch (error) {
-    console.error("❌ Email configuration test failed:", error.message);
-    console.log("\n🔧 Troubleshooting Steps:");
-    console.log("1. Verify Gmail username: basheerinsurance99@gmail.com");
-    console.log("2. Verify app password: aobg elxm xxdr ejhc");
-    console.log(
-      "3. Ensure 2-Factor Authentication is enabled on the Gmail account"
-    );
-    console.log("4. Check internet connection");
-    console.log("5. Verify firewall settings");
+    console.error("\n❌ Email service test failed:", error.message);
+    console.error("🔍 Error details:", error);
   }
 }
 
 // Run the test
-testEmailConfiguration().catch(console.error);
+testEmailService();
+

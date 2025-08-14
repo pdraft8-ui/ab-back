@@ -586,16 +586,13 @@ async function main() {
     await optimizer.initialize();
 
     const report = await optimizer.generateOptimizationReport();
-    console.log(
-      "Database optimization report:",
-      JSON.stringify(report, null, 2)
-    );
+    // Database optimization report generated
 
     await optimizer.optimizeDatabase();
 
     process.exit(0);
   } catch (error) {
-    console.error("Database optimization failed:", error);
+    // Database optimization failed: ${error.message}
     process.exit(1);
   }
 }

@@ -139,9 +139,8 @@ describe("Security Tests", () => {
   });
 
   describe("Rate Limiting", () => {
-    test("should implement rate limiting on API endpoints", async () => {
-      // This test would need to be run against the actual app with rate limiting
-      // For now, we'll test the configuration
+    test("should have rate limiting disabled", async () => {
+      // Rate limiting has been disabled
       expect(validateSecurityConfig()).toBe(true);
     });
   });

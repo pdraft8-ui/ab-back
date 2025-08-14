@@ -1,0 +1,54 @@
+export class Vehicle {
+    static fromJSON(json: any): Vehicle;
+    static create(vehicleData: any): Vehicle;
+    constructor(vehicleData: any);
+    id: any;
+    customerId: any;
+    plateNumber: any;
+    model: any;
+    type: any;
+    ownership: any;
+    modelNumber: any;
+    licenseExpiry: any;
+    lastTest: any;
+    color: any;
+    price: any;
+    image: any;
+    insurance: any;
+    createdAt: any;
+    updatedAt: any;
+    isValid(): boolean;
+    hasValidPlateNumber(): boolean;
+    hasValidCustomer(): boolean;
+    hasInsurance(): boolean;
+    getActiveInsurance(): any;
+    getExpiredInsurance(): any;
+    getUpcomingInsurance(): any;
+    hasExpiredLicense(): boolean;
+    hasExpiredTest(): boolean;
+    addInsurance(insuranceData: any): void;
+    removeInsurance(insuranceId: any): boolean;
+    updateInsurance(insuranceId: any, insuranceData: any): boolean;
+    getInsuranceById(insuranceId: any): any;
+    getTotalInsuranceAmount(): any;
+    getTotalPaidAmount(): any;
+    getTotalRemainingDebt(): any;
+    toJSON(): {
+        id: any;
+        customerId: any;
+        plateNumber: any;
+        model: any;
+        type: any;
+        ownership: any;
+        modelNumber: any;
+        licenseExpiry: any;
+        lastTest: any;
+        color: any;
+        price: any;
+        image: any;
+        insurance: any;
+        createdAt: any;
+        updatedAt: any;
+    };
+}
+//# sourceMappingURL=Vehicle.entity.d.ts.map

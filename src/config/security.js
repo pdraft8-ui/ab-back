@@ -14,27 +14,27 @@ export const SECURITY_CONFIG = {
     AUDIENCE: "insurance-client",
   },
 
-  // Rate Limiting Configuration
-  RATE_LIMIT: {
-    GENERAL: {
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-      message: "Too many requests from this IP, please try again later.",
-      retryAfter: "15 minutes",
-    },
-    AUTH: {
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 5, // limit each IP to 5 requests per windowMs
-      message: "Too many authentication attempts, please try again later.",
-      retryAfter: "15 minutes",
-    },
-    UPLOAD: {
-      windowMs: 60 * 60 * 1000, // 1 hour
-      max: 10, // limit each IP to 10 upload requests per hour
-      message: "Too many file uploads, please try again later.",
-      retryAfter: "1 hour",
-    },
-  },
+  // Rate Limiting Configuration - DISABLED
+  // RATE_LIMIT: {
+  //   GENERAL: {
+  //     windowMs: 15 * 60 * 1000, // 15 minutes
+  //     max: 100, // limit each IP to 100 requests per windowMs
+  //     message: "Too many requests from this IP, please try again later.",
+  //     retryAfter: "15 minutes",
+  //   },
+  //   AUTH: {
+  //     windowMs: 15 * 60 * 1000, // 15 minutes
+  //     max: 5, // limit each IP to 5 requests per windowMs
+  //     message: "Too many authentication attempts, please try again later.",
+  //     retryAfter: "15 minutes",
+  //     },
+  //   UPLOAD: {
+  //     windowMs: 60 * 60 * 1000, // 1 hour
+  //     max: 10, // limit each IP to 10 upload requests per hour
+  //     message: "Too many file uploads, please try again later.",
+  //     retryAfter: "1 hour",
+  //   },
+  // },
 
   // CORS Configuration
   CORS: {
@@ -161,13 +161,13 @@ export const SECURITY_CONFIG = {
   ENVIRONMENT: {
     PRODUCTION: {
       CORS_ORIGIN: process.env.PRODUCTION_ORIGINS?.split(",") || [],
-      RATE_LIMIT_MULTIPLIER: 2, // Stricter rate limiting in production
+      // RATE_LIMIT_MULTIPLIER: 2, // DISABLED
       LOG_LEVEL: "warn",
       SECURE_COOKIES: true,
     },
     DEVELOPMENT: {
       CORS_ORIGIN: ["http://localhost:3000", "http://localhost:3001"],
-      RATE_LIMIT_MULTIPLIER: 1,
+      // RATE_LIMIT_MULTIPLIER: 1, // DISABLED
       LOG_LEVEL: "debug",
       SECURE_COOKIES: false,
     },
@@ -183,10 +183,11 @@ export const getSecurityConfig = () => {
 
   if (env === "production") {
     baseConfig.CORS.ORIGIN = SECURITY_CONFIG.ENVIRONMENT.PRODUCTION.CORS_ORIGIN;
-    baseConfig.RATE_LIMIT.GENERAL.max *=
-      SECURITY_CONFIG.ENVIRONMENT.PRODUCTION.RATE_LIMIT_MULTIPLIER;
-    baseConfig.RATE_LIMIT.AUTH.max *=
-      SECURITY_CONFIG.ENVIRONMENT.PRODUCTION.RATE_LIMIT_MULTIPLIER;
+    // Rate limiting disabled
+    // baseConfig.RATE_LIMIT.GENERAL.max *=
+    //   SECURITY_CONFIG.ENVIRONMENT.PRODUCTION.RATE_LIMIT_MULTIPLIER;
+    // baseConfig.RATE_LIMIT.AUTH.max *=
+    //   SECURITY_CONFIG.ENVIRONMENT.PRODUCTION.RATE_LIMIT_MULTIPLIER;
     baseConfig.LOGGING.LOG_LEVEL =
       SECURITY_CONFIG.ENVIRONMENT.PRODUCTION.LOG_LEVEL;
     baseConfig.SESSION.SECURE =

@@ -1,0 +1,41 @@
+export class ICustomerRepository {
+    createCustomer(customerData: any): Promise<void>;
+    getCustomerById(id: any): Promise<void>;
+    getAllCustomers(filters?: {}): Promise<void>;
+    updateCustomer(id: any, updateData: any): Promise<void>;
+    deleteCustomer(id: any): Promise<void>;
+    getCustomerByInvoiceId(invoiceId: any): Promise<void>;
+    getCustomerByIdNumber(idNumber: any): Promise<void>;
+    getCustomerByPhoneNumber(phoneNumber: any): Promise<void>;
+    getCustomersByAgent(agentId: any): Promise<void>;
+    getCustomersByCity(city: any): Promise<void>;
+    getCustomerCount(): Promise<void>;
+    getCustomersByMonth(): Promise<void>;
+    getCustomersByDateRange(startDate: any, endDate: any): Promise<void>;
+    addVehicleToCustomer(customerId: any, vehicleData: any): Promise<void>;
+    removeVehicleFromCustomer(customerId: any, vehicleId: any): Promise<void>;
+    updateVehicle(customerId: any, vehicleId: any, updateData: any): Promise<void>;
+    getCustomerVehicles(customerId: any): Promise<void>;
+    getVehicleByPlateNumber(plateNumber: any): Promise<void>;
+    addInsuranceToVehicle(customerId: any, vehicleId: any, insuranceData: any): Promise<void>;
+    removeInsuranceFromVehicle(customerId: any, vehicleId: any, insuranceId: any): Promise<void>;
+    updateVehicleInsurance(customerId: any, vehicleId: any, insuranceId: any, updateData: any): Promise<void>;
+    getVehicleInsurances(customerId: any, vehicleId: any): Promise<void>;
+    getAllVehicleInsurances(): Promise<void>;
+    getAllInsurancesData(): Promise<void>;
+    addCustomerInsurance(customerId: any, insuranceData: any): Promise<void>;
+    removeCustomerInsurance(customerId: any, insuranceId: any): Promise<void>;
+    updateCustomerInsurance(customerId: any, insuranceId: any, updateData: any): Promise<void>;
+    getCustomerInsurances(customerId: any): Promise<void>;
+    getAllCustomerInsurances(customerId: any): Promise<void>;
+    getInsuranceById(insuranceId: any): Promise<void>;
+    deleteInsuranceById(insuranceId: any): Promise<void>;
+    addCheckToInsurance(customerId: any, vehicleId: any, insuranceId: any, checkData: any): Promise<void>;
+    removeCheckFromInsurance(customerId: any, vehicleId: any, checkId: any): Promise<void>;
+    getInsuranceChecks(customerId: any, vehicleId: any, insuranceId: any): Promise<void>;
+    getAllChecksForVehicle(customerId: any, vehicleId: any): Promise<void>;
+    getCustomerStats(filters?: {}): Promise<void>;
+    getVehicleStats(): Promise<void>;
+    getInsuranceStats(): Promise<void>;
+}
+//# sourceMappingURL=ICustomerRepository.d.ts.map

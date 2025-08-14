@@ -426,11 +426,11 @@ async function main() {
     await warmer.warmAllCaches();
 
     const stats = await warmer.getWarmingStats();
-    console.log("Cache warming completed with stats:", stats);
+    // Cache warming completed with stats
 
     process.exit(0);
   } catch (error) {
-    console.error("Cache warming failed:", error);
+    // Cache warming failed: ${error.message}
     process.exit(1);
   }
 }

@@ -1,0 +1,50 @@
+export class DocumentSettings {
+    static fromJSON(json: any): DocumentSettings;
+    static create(settingsData: any): DocumentSettings;
+    constructor(settingsData: any);
+    id: any;
+    documentType: any;
+    header: any;
+    footer: any;
+    isActive(): () => /*elided*/ any;
+    createdBy: any;
+    updatedBy: any;
+    createdAt: any;
+    updatedAt: any;
+    isValid(): boolean;
+    isValidDocumentType(): boolean;
+    hasHeaderLogo(): boolean;
+    hasFooterLogo(): boolean;
+    hasSignature(): boolean;
+    hasCompanyInfo(): boolean;
+    getHeaderLogoUrl(): any;
+    getFooterLogoUrl(): any;
+    getSignatureUrl(): any;
+    getCompanyName(): any;
+    getCompanyAddress(): any;
+    getCompanyPhone(): any;
+    getCompanyEmail(): any;
+    getCompanyWebsite(): any;
+    getFooterText(): any;
+    getTermsAndConditions(): any;
+    activate(): void;
+    deactivate(): void;
+    toggleStatus(): void;
+    updateHeaderLogo(url: any, publicId: any): void;
+    updateFooterLogo(url: any, publicId: any): void;
+    updateSignature(url: any, publicId: any): void;
+    updateCompanyInfo(companyInfo: any): void;
+    updateFooterInfo(footerInfo: any): void;
+    toJSON(): {
+        id: any;
+        documentType: any;
+        header: any;
+        footer: any;
+        isActive: () => /*elided*/ any;
+        createdBy: any;
+        updatedBy: any;
+        createdAt: any;
+        updatedAt: any;
+    };
+}
+//# sourceMappingURL=DocumentSettings.entity.d.ts.map

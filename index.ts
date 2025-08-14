@@ -16,7 +16,7 @@ import swaggerUi from "swagger-ui-express";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import rateLimit from "express-rate-limit";
+// import rateLimit from "express-rate-limit";
 import { createRequire } from "module";
 
 // Import monitoring
@@ -39,14 +39,14 @@ import { getInvoiceRoutes } from "./src/modules/Invoice/index.js";
 import { getCustomerRoutes } from "./src/modules/Customer/index.js";
 import { getTranzilaPaymentRoutes } from "./src/modules/TranzilaPayment/index.js";
 import { getAuditRoutes } from "./src/modules/Audit/index.js";
-import { getNotificationRoutes } from "./src/modules/Notification/index.js";
+import { getNotificationRoutes } from "./src/modules/notification/index.js";
 import { getUserRoutes } from "./src/modules/User/index.js";
-import { getDepartmentRoutes } from "./src/modules/Department/index.js";
+import { getDepartmentRoutes } from "./src/modules/department/index.js";
 import { getVehicleRoutes } from "./src/modules/Vehicle/index.js";
-import { getDocumentSettingsRoutes } from "./src/modules/DocumentSettings/index.js";
-import { getInsuranceCompanyRoutes } from "./src/modules/InsuranceCompany/index.js";
+import { getDocumentSettingsRoutes } from "./src/modules/documentSettings/index.js";
+import { getInsuranceCompanyRoutes } from "./src/modules/insuranceCompany/index.js";
 import { getRoadServiceRoutes } from "./src/modules/RoadService/index.js";
-import { getCallRoutes } from "./src/modules/Call/index.js";
+import { getCallRoutes } from "./src/modules/call/index.js";
 import { getTakafulAccidentReportRoutes } from "./src/modules/TakafulAccidentReport/index.js";
 import { getTrustAccidentReportRoutes } from "./src/modules/TrustAccidentReport/index.js";
 import { getAlAhliaAccidentRoutes } from "./src/modules/AlAhliaAccident/index.js";
@@ -54,7 +54,7 @@ import { getPalestineAccidentReportRoutes } from "./src/modules/PalestineAcciden
 import { getAlMashreqAccidentReportRoutes } from "./src/modules/Al-MashreqAccidentReport/index.js";
 import { getHolyLandsReportRoutes } from "./src/modules/HolyLandsReport/index.js";
 import { getAgentRoutes } from "./src/modules/Agents/index.js";
-import { getChequeRoutes } from "./src/modules/Cheque/index.js";
+import { getChequeRoutes } from "./src/modules/cheque/index.js";
 import statisticsRouter from "./src/modules/Statistics/Statistics.route.js";
 import reportsRouter from "./src/modules/Reports/Reports.route.js";
 
@@ -78,9 +78,7 @@ try {
     readFileSync(join(__dirname, "swagger.json"), "utf8")
   );
 } catch (error) {
-  console.warn(
-    "Warning: swagger.json not found, API documentation will not be available"
-  );
+  // Warning: swagger.json not found, API documentation will not be available
   swaggerDocument = {};
 }
 
@@ -118,23 +116,19 @@ const io = new Server(server, {
 const onlineUsers = new Map();
 
 io.on("connection", (socket) => {
-  console.log(" online user", socket.id);
+  // User connected: ${socket.id}
 
   socket.on("registerUser", (userId: string) => {
     onlineUsers.set(userId, socket.id);
-    console.log(
-      `User ${userId} has been registered with Socket ID: ${socket.id}`
-    );
+    // User ${userId} has been registered with Socket ID: ${socket.id}
   });
 
   socket.on("disconnect", () => {
-    console.log(" user offline", socket.id);
+    // User offline: ${socket.id}
     for (let [userId, socketId] of onlineUsers.entries()) {
       if (socketId === socket.id) {
         onlineUsers.delete(userId);
-        console.log(
-          `User ${userId} has been removed from the list of connected users`
-        );
+        // User ${userId} has been removed from the list of connected users
         break;
       }
     }
@@ -205,70 +199,69 @@ app.use(
   })
 );
 
-// Rate limiting configuration
-const generalLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour (changed from 15 minutes)
-  max: 1000, // limit each IP to 1000 requests per hour (changed from 100 per 15 minutes)
-  message: {
-    error: "Too many requests from this IP, please try again later.",
-    retryAfter: "1 hour",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req: Request, res: Response) => {
-    res.status(429).json({
-      success: false,
-      message: "Too many requests from this IP, please try again later.",
-      retryAfter: "1 hour",
-    });
-  },
-});
+// Rate limiting configuration - DISABLED
+// const generalLimiter = rateLimit({
+//   windowMs: 60 * 60 * 1000, // 1 hour (changed from 15 minutes)
+//   max: 1000, // limit each IP to 1000 requests per hour (changed from 100 per 15 minutes)
+//   message: {
+//     error: "Too many requests from this IP, please try again later.",
+//     retryAfter: "1 hour",
+//   },
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   handler: (req: Request, res: Response) => {
+//     res.status(429).json({
+//       success: false,
+//       message: "Too many requests from this IP, please try again later.",
+//       retryAfter: "1 hour",
+//     });
+//   },
+// });
 
-const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour (changed from 15 minutes)
-  max: 50, // limit each IP to 50 authentication attempts per hour (changed from 5 per 15 minutes)
-  message: {
-    error: "Too many authentication attempts, please try again later.",
-    retryAfter: "1 hour",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req: Request, res: Response) => {
-    res.status(429).json({
-      success: false,
-      message: "Too many authentication attempts, please try again later.",
-      retryAfter: "1 hour",
-    });
-  },
-});
+// const authLimiter = rateLimit({
+//   windowMs: 60 * 60 * 1000, // 1 hour (changed from 15 minutes)
+//   max: 50, // limit each IP to 50 authentication attempts per hour (changed from 5 per 15 minutes)
+//   message: {
+//     error: "Too many authentication attempts, please try again later.",
+//     retryAfter: "1 hour",
+//   },
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   handler: (req: Request, res: Response) => {
+//     res.status(429).json({
+//       success: false,
+//       message: "Too many authentication attempts, please try again later.",
+//       retryAfter: "1 hour",
+//     });
+//   },
+// });
 
-const uploadLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // limit each IP to 10 upload requests per hour
-  message: {
-    error: "Too many file uploads, please try again later.",
-    retryAfter: "1 hour",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req: Request, res: Response) => {
-    res.status(429).json({
-      success: false,
-      message: "Too many file uploads, please try again later.",
-      retryAfter: "1 hour",
-    });
-  },
-});
+// const uploadLimiter = rateLimit({
+//   windowMs: 60 * 60 * 1000, // 1 hour
+//   max: 10, // limit each IP to 10 upload requests per hour
+//   message: {
+//     error: "Too many file uploads, please try again later.",
+//     retryAfter: "1 hour",
+//   },
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   handler: (req: Request, res: Response) => {
+//     res.status(429).json({
+//       success: false,
+//       message: "Too many file uploads, please try again later.",
+//       retryAfter: "1 hour",
+//     });
+//   },
+// });
 
-// Apply rate limiting
-app.use("/api/", generalLimiter);
-app.use("/api/v1/user/signin", authLimiter);
-app.use("/api/v1/user/signup", authLimiter);
-app.use("/api/v1/user/forgetPassword", authLimiter);
-app.use("/api/v1/user/verifyCode", authLimiter);
-app.use("/api/v1/user/resetPassword", authLimiter);
-app.use("/api/v1/customer/addInsurance", uploadLimiter);
-app.use("/api/v1/cheques/upload", uploadLimiter);
+// Apply rate limiting - DISABLED
+// app.use("/api/", generalLimiter);
+// app.use("/api/v1/user/signin", authLimiter);
+// app.use("/api/v1/user/signup", authLimiter);
+// app.use("/api/v1/user/forgetPassword", authLimiter);
+// app.use("/api/v1/user/verifyCode", authLimiter);
+// app.use("/api/v1/user/resetPassword", authLimiter);
+// app.use("/api/v1/cheques/upload", uploadLimiter);
 
 // Apply sanitization middleware to all API routes
 app.use("/api/", sanitizeRequest);
@@ -376,82 +369,80 @@ app.use("/api/v1/notification", getNotificationRoutes().getRouter());
 // Initialize async routes for remaining modules
 (async () => {
   try {
-    console.log("🔄 Initializing async routes...");
+    // Initializing async routes...
 
-    console.log("📝 Registering user routes...");
+    // Registering user routes...
     app.use("/api/v1/user", (await getUserRoutes()).getRouter());
 
-    console.log("📝 Registering department routes...");
+    // Registering department routes...
     app.use("/api/v1/department", (await getDepartmentRoutes()).getRouter());
 
-    console.log("📝 Registering vehicle routes...");
+    // Registering vehicle routes...
     app.use("/api/v1/vehicle", (await getVehicleRoutes()).getRouter());
 
-    console.log("📝 Registering document settings routes...");
+    // Registering document settings routes...
     app.use(
       "/api/v1/document-settings",
       (await getDocumentSettingsRoutes()).getRouter()
     );
 
-    console.log("📝 Registering insurance company routes...");
+    // Registering insurance company routes...
     app.use(
       "/api/v1/insurance-company",
       (await getInsuranceCompanyRoutes()).getRouter()
     );
 
-    console.log("📝 Registering road service routes...");
+    // Registering road service routes...
     app.use("/api/v1/road-service", (await getRoadServiceRoutes()).getRouter());
 
-    console.log("📝 Registering call routes...");
+    // Registering call routes...
     app.use("/api/v1/call", (await getCallRoutes()).getRouter());
 
-    console.log("📝 Registering takaful accident report routes...");
+    // Registering takaful accident report routes...
     app.use(
       "/api/v1/takaful-accident-report",
       (await getTakafulAccidentReportRoutes()).getRouter()
     );
 
-    console.log("📝 Registering cheque routes...");
+    // Registering cheque routes...
     app.use("/api/v1/cheque", (await getChequeRoutes()).getRouter());
 
-    console.log("📝 Registering trust accident report routes...");
+    // Registering trust accident report routes...
     app.use(
       "/api/v1/trust-accident-report",
       (await getTrustAccidentReportRoutes()).getRouter()
     );
 
-    console.log("📝 Registering al ahlia accident routes...");
+    // Registering al ahlia accident routes...
     app.use(
       "/api/v1/al-ahlia-accident",
       (await getAlAhliaAccidentRoutes()).getRouter()
     );
 
-    console.log("📝 Registering palestine accident report routes...");
+    // Registering palestine accident report routes...
     app.use(
       "/api/v1/palestine-accident-report",
       (await getPalestineAccidentReportRoutes()).getRouter()
     );
 
-    console.log("📝 Registering al mashreq accident report routes...");
+    // Registering al mashreq accident report routes...
     app.use(
       "/api/v1/al-mashreq-accident-report",
       (await getAlMashreqAccidentReportRoutes()).getRouter()
     );
 
-    console.log("📝 Registering holy lands report routes...");
+    // Registering holy lands report routes...
     app.use(
       "/api/v1/holy-lands-report",
       (await getHolyLandsReportRoutes()).getRouter()
     );
 
-    console.log("📝 Registering agents routes...");
+    // Registering agents routes...
     app.use("/api/v1/agents", (await getAgentRoutes()).getRouter());
 
-    console.log("✅ All async routes initialized successfully!");
+    // All async routes initialized successfully!
   } catch (error) {
-    console.error("❌ Error initializing async routes:", error);
-    console.error("Error details:", error.message);
-    console.error("Error stack:", error.stack);
+    // Error initializing async routes: ${error.message}
   }
 })();
 

@@ -1,0 +1,27 @@
+export function addCustomer(req: any, res: any, next: any): Promise<any>;
+export function deleteCustomer(req: any, res: any, next: any): Promise<any>;
+export function getAllVehicleInsurances(req: any, res: any, next: any): Promise<any>;
+export function getAllInsurancesData(req: any, res: any, next: any): Promise<any>;
+export function allCustomer(req: any, res: any, next: any): Promise<any>;
+export function showById(req: any, res: any, next: any): Promise<any>;
+export function getTotalCustomerCount(req: any, res: any, next: any): Promise<void>;
+export function getCustomerByMonth(req: any, res: any, next: any): Promise<void>;
+export function updateCustomer(req: any, res: any, next: any): Promise<any>;
+export function addVehicle(req: any, res: any, next: any): Promise<any>;
+export function removeVehicle(req: any, res: any, next: any): Promise<any>;
+export function updateVehicle(req: any, res: any, next: any): Promise<any>;
+export function getCustomerVehicles(req: any, res: any): Promise<any>;
+export function removeInsuranceFromVehicle(req: any, res: any, next: any): Promise<any>;
+export function addInsuranceToVehicle(req: any, res: any, next: any): Promise<any>;
+export function getInsurancesForVehicle(req: any, res: any, next: any): Promise<any>;
+export function addCheckToInsurance(req: any, res: any, next: any): Promise<any>;
+export function getInsuranceChecks(req: any, res: any, next: any): Promise<any>;
+export function getAllChecksForVehicle(req: any, res: any, next: any): Promise<any>;
+export function deleteCheckFromInsurance(req: any, res: any, next: any): Promise<any>;
+export function getCustomerInsurances(req: any, res: any, next: any): Promise<any>;
+export function addCustomerInsurance(req: any, res: any, next: any): Promise<any>;
+export function getAllCustomerInsurances(req: any, res: any, next: any): Promise<any>;
+export function getInsuranceById(req: any, res: any, next: any): Promise<any>;
+export function updateInsuranceById(req: any, res: any, next: any): Promise<any>;
+export function deleteInsuranceById(req: any, res: any, next: any): Promise<any>;
+//# sourceMappingURL=customer.controller.d.ts.map

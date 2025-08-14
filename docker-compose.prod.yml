@@ -1,0 +1,62 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/AB_insurance_production
+      - REDIS_URL=redis://redis:6379
+      - LOG_LEVEL=warn
+      - ENABLE_MONITORING=true
+      - ENABLE_CACHE=true
+      - ENABLE_RATE_LIMITING=false
+      - TRANZILA_API_URL=https://secure5.tranzila.com
+      - TRANZILA_SUPPLIER_ID=basheer
+      - TRANZILA_TERMINAL_ID=basheer
+      - TRANZILA_PASSWORD=ePWRQkDs
+      - GMAIL_USER=basheerinsurance99@gmail.com
+      - GMAIL_APP_PASSWORD=aobg elxm xxdr ejhc
+      - EMAIL_FROM_NAME=AB Insurance Company
+    depends_on:
+      - mongo
+      - redis
+    restart: unless-stopped
+    networks:
+      - insurance-network
+    volumes:
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=AB_insurance_production
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - insurance-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - insurance-network
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  insurance-network:
+    driver: bridge

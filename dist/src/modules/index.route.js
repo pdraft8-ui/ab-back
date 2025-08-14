@@ -1,0 +1,23 @@
+import departmentRouter from "./department/department.route.js";
+import customerRouter from "./customers/customer.route.js";
+import userRouter from "./User/user.route.js";
+import insuranceCompanyRouter from "./insuranceCompany/insuranceCompany.route.js";
+import RoadServiceRouter from "./RoadService/RoadService.route.js";
+import NotificationRouter from "./notification/notification.route.js";
+import callRouter from "./call/call.route.js";
+import TakafulAccidentReportRouter from "./TakafulAccidentReport/TakafulAccidentReport.route.js";
+import TrustAccidentReportRouter from "./TrustAccidentReport/TrustAccidentReport.route.js";
+import AlAhliaAccidentRouter from "./Al-AhliaAccident/Al-AhliaAccident.route.js";
+import PalestineAccidentReportRouter from "./PalestineAccidentReport/PalestineAccidentReport.route.js";
+import Al_MashreqAccidentReportRouter from "./Al-MashreqAccidentReport/Al-MashreqAccidentReport.route.js";
+import HolyLandsReportRouter from "./HolyLandsReport/HolyLandsReport.route.js";
+import auditsRouter from "./auditLog/auditLog.route.js";
+import AgentRouter from "./Agents/Agents.route.js";
+import InvoiceRouter from "./Invoice/Invoice.route.js";
+import PaymentRouter from "./Payment/Payment.route.js";
+import vehicleRouter from "./vehicles/vehicle.route.js";
+import documentSettingsRouter from "./documentSettings/documentSettings.route.js";
+import chequeRouter from "./cheques/cheque.route.js";
+import tranzilaPaymentRouter from "./TranzilaPayment/TranzilaPayment.route.js";
+export { userRouter, departmentRouter, customerRouter, insuranceCompanyRouter, RoadServiceRouter, NotificationRouter, callRouter, TakafulAccidentReportRouter, TrustAccidentReportRouter, AlAhliaAccidentRouter, PalestineAccidentReportRouter, Al_MashreqAccidentReportRouter, HolyLandsReportRouter, auditsRouter, AgentRouter, InvoiceRouter, PaymentRouter, vehicleRouter, documentSettingsRouter, chequeRouter, tranzilaPaymentRouter, };
+//# sourceMappingURL=index.route.js.map
