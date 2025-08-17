@@ -115,25 +115,52 @@ export const changepassword = async (req, res) => {
   }
 };
 export const addAdmin = async (req, res) => {
-  const finduser = await UserModel.findOne({ email: "islam@ab.com" });
+  try {
+    const { name, email, password } = req.body;
 
-  if (!finduser) {
+    // Validate required fields
+    if (!name || !email || !password) {
+      return res.status(400).json({ 
+        message: "Name, email, and password are required" 
+      });
+    }
+
+    // Check if user already exists
+    const finduser = await UserModel.findOne({ email: email });
+
+    if (finduser) {
+      return res.status(400).json({ message: "user already exists" });
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(
-      "Islam123..",
+      password,
       parseInt(process.env.saltRound)
     );
+
+    // Create admin user
     const adminUser = new UserModel({
-      name: "admin",
-      email: "islam@ab.com",
+      name,
+      email,
       role: "admin",
       password: hashedPassword,
       status: "active",
     });
 
     await adminUser.save();
-    res.status(200).json({ message: "success", adminUser });
-  } else {
-    res.json({ message: "user already exists" });
+    res.status(201).json({ 
+      message: "Admin user created successfully", 
+      user: {
+        _id: adminUser._id,
+        name: adminUser.name,
+        email: adminUser.email,
+        role: adminUser.role,
+        status: adminUser.status
+      }
+    });
+  } catch (error) {
+    console.error("Error creating admin user:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 export const signin = async (req, res, next) => {

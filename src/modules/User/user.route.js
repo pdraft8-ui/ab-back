@@ -12,7 +12,7 @@ userRouter.put(
 );
 userRouter.put("/change", auth(endPoints.prof), userRoute.changeInformation);
 userRouter.get("/profile", auth(endPoints.prof), userRoute.profile);
-userRouter.post("/add", userRoute.addAdmin);
+userRouter.post("/add", validation(userValid.addAdmin), userRoute.addAdmin);
 userRouter.post("/signin", validation(userValid.signin), userRoute.signin);
 
 userRouter.patch(

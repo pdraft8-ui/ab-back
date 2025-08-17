@@ -9,6 +9,21 @@ export const signin = {
     }),
   }).required(),
 };
+
+export const addAdmin = {
+  body: Joi.object({
+    name: Joi.string().required().min(3).max(25).messages({
+      "string.min": "يجب ان يكون اسم المستخدم على الاقل 3 حروف",
+      "string.max": "يجب ان يكون اسم المستخدم على الاكثر 25 حرف",
+    }),
+    email: Joi.string().required().email().messages({
+      "string.email": "يرجى ادخال عنوان بريد الكتروني صحيح",
+    }),
+    password: Joi.string().required().min(7).messages({
+      "string.min": "يجب ان تتكون كلمة المرور على الاقل من 7 حروف",
+    }),
+  }).required(),
+};
 export const forgetPassword = {
   body: Joi.object({
     newPassword: Joi.string().required().min(7).messages({
