@@ -10,7 +10,12 @@ const insuranceFilesDir = path.join(
   "uploads/Customer/InsuranceFiles/"
 );
 if (!fs.existsSync(insuranceFilesDir)) {
-  fs.mkdirSync(insuranceFilesDir, { recursive: true });
+  try {
+    fs.mkdirSync(insuranceFilesDir, { recursive: true });
+  } catch (error) {
+    console.warn(`Warning: Could not create directory ${insuranceFilesDir}: ${error.message}`);
+    console.warn(`This might be due to permission issues. The application will continue to run.`);
+  }
 }
 
 // Define allowed file types
@@ -46,7 +51,12 @@ export function myMulter(
   // Ensure the destination directory exists
   const destPath = path.join(process.cwd(), destination);
   if (!fs.existsSync(destPath)) {
-    fs.mkdirSync(destPath, { recursive: true });
+    try {
+      fs.mkdirSync(destPath, { recursive: true });
+    } catch (error) {
+      console.warn(`Warning: Could not create directory ${destPath}: ${error.message}`);
+      console.warn(`This might be due to permission issues. The application will continue to run.`);
+    }
   }
 
   const storage = multer.diskStorage({
