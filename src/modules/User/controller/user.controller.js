@@ -173,7 +173,7 @@ export const signin = async (req, res, next) => {
     } else {
       const match = await bcrypt.compare(password, user.password);
       if (!match) {
-        res.json("please ensure that your password is correct");
+        return res.status(401).json({ message: "please ensure that your password is correct" });
       } else {
         const token = jwt.sign(
           { id: user._id, email, name: user.name, role: user.role },
@@ -192,7 +192,7 @@ export const forgetPassward = async (req, res, next) => {
   const { code, email, newPassword } = req.body;
   try {
     if (code == null) {
-      return res.json("Please enter the reset code");
+      return res.status(400).json({ message: "Please enter the reset code" });
     } else {
       const hash = bcrypt.hashSync(
         newPassword,
@@ -203,7 +203,7 @@ export const forgetPassward = async (req, res, next) => {
         { password: hash, sendCode: null }
       );
       if (!user) {
-        return res.json("Please verify the code");
+        return res.status(400).json({ message: "Please verify the code" });
       }
       return res.status(200).json({ message: "sucsses", user });
     }

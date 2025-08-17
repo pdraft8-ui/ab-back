@@ -57,7 +57,7 @@ async function testUserLoginWithWrongPassword() {
     console.log('❌ Login should have failed but succeeded:', response.data);
     return false;
   } catch (error) {
-    if (error.response?.data === 'please ensure that your password is correct') {
+    if (error.response?.status === 401 && error.response?.data?.message === 'please ensure that your password is correct') {
       console.log('✅ Login correctly rejected with wrong password');
       return true;
     }
