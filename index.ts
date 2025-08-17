@@ -161,10 +161,39 @@ if (process.env.NODE_ENV !== "production") {
 
 // Enhanced CORS configuration with security
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3002"]
-      : ["http://localhost:3002", "http://localhost:3001", "http://localhost:5173", "http://127.0.0.1:5173"], // Allow specific origins in development
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (process.env.NODE_ENV === "production") {
+      const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:3002"];
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+    } else {
+      // Development mode - more permissive
+      const allowedOrigins = [
+        "http://localhost:3002", 
+        "http://localhost:3001", 
+        "http://localhost:5173", 
+        "http://127.0.0.1:5173",
+        "http://host.docker.internal:5173",
+        "http://host.docker.internal:3002"
+      ];
+      
+      // If running in Docker, be more permissive
+      if (process.env.ALLOWED_ORIGINS) {
+        const dockerOrigins = process.env.ALLOWED_ORIGINS.split(",");
+        allowedOrigins.push(...dockerOrigins);
+      }
+      
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],

@@ -166,7 +166,14 @@ export const SECURITY_CONFIG = {
       SECURE_COOKIES: true,
     },
     DEVELOPMENT: {
-      CORS_ORIGIN: ["http://localhost:3002", "http://localhost:3001", "http://localhost:5173"],
+      CORS_ORIGIN: [
+        "http://localhost:3002", 
+        "http://localhost:3001", 
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://host.docker.internal:5173",
+        "http://host.docker.internal:3002"
+      ],
       // RATE_LIMIT_MULTIPLIER: 1, // DISABLED
       LOG_LEVEL: "debug",
       SECURE_COOKIES: false,

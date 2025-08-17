@@ -6,12 +6,12 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - NODE_ENV=production
-              - PORT=3002
-      - DBURL=mongodb://mongo:27017/AB_insurance_production
-      - MONGODB_URI=mongodb://mongo:27017/AB_insurance_production
+      - NODE_ENV=development
+      - PORT=3002
+      - DBURL=mongodb://mongo:27017/AB_insurance
+      - MONGODB_URI=mongodb://mongo:27017/AB_insurance
       - REDIS_URL=redis://redis:6379
-      - LOG_LEVEL=warn
+      - LOG_LEVEL=debug
       - ENABLE_MONITORING=true
       - ENABLE_CACHE=true
       - ENABLE_RATE_LIMITING=false
@@ -32,13 +32,15 @@ services:
     volumes:
       - ./logs:/app/logs
       - ./uploads:/app/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mongo:
     image: mongo:6.0
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_DATABASE=AB_insurance_production
+      - MONGO_INITDB_DATABASE=AB_insurance
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped
@@ -62,4 +64,3 @@ volumes:
 networks:
   insurance-network:
     driver: bridge
-
