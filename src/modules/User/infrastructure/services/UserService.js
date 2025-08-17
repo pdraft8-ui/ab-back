@@ -101,7 +101,7 @@ export class UserService extends IUserService {
 
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
+        process.env.TokenSignIn,
         { expiresIn: "24h" }
       );
 
