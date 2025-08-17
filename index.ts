@@ -174,11 +174,17 @@ const corsOptions = {
       // Development mode - more permissive
       const allowedOrigins = [
         "http://localhost:3002", 
+        "https://localhost:3002",
         "http://localhost:3001", 
+        "https://localhost:3001",
         "http://localhost:5173", 
+        "https://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://127.0.0.1:5173",
         "http://host.docker.internal:5173",
-        "http://host.docker.internal:3002"
+        "https://host.docker.internal:5173",
+        "http://host.docker.internal:3002",
+        "https://host.docker.internal:3002"
       ];
       
       // If running in Docker, be more permissive

@@ -15,7 +15,7 @@ services:
       - ENABLE_MONITORING=true
       - ENABLE_CACHE=true
       - ENABLE_RATE_LIMITING=false
-      - ALLOWED_ORIGINS=http://localhost:3002,http://localhost:5173,http://127.0.0.1:5173,http://host.docker.internal:5173
+      - ALLOWED_ORIGINS=http://localhost:3002,https://localhost:3002,http://localhost:5173,https://localhost:5173,http://127.0.0.1:5173,https://127.0.0.1:5173,http://host.docker.internal:5173,https://host.docker.internal:5173
       - TRANZILA_API_URL=https://secure5.tranzila.com
       - TRANZILA_SUPPLIER_ID=basheer
       - TRANZILA_TERMINAL_ID=basheer
