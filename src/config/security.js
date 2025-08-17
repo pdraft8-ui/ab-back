@@ -166,7 +166,7 @@ export const SECURITY_CONFIG = {
       SECURE_COOKIES: true,
     },
     DEVELOPMENT: {
-      CORS_ORIGIN: ["http://localhost:3002", "http://localhost:3001"],
+      CORS_ORIGIN: ["http://localhost:3002", "http://localhost:3001", "http://localhost:5173"],
       // RATE_LIMIT_MULTIPLIER: 1, // DISABLED
       LOG_LEVEL: "debug",
       SECURE_COOKIES: false,

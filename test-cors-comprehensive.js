@@ -49,6 +49,7 @@ const testOrigins = [
   "http://localhost:3002",
       "http://127.0.0.1:3002",
   "http://localhost:5173", // Vite default
+  "http://127.0.0.1:5173", // Vite default (alternative)
   "http://localhost:8080", // Common dev server
   "http://localhost:4200", // Angular default
 ];
