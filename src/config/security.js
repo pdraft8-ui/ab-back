@@ -39,7 +39,7 @@ export const SECURITY_CONFIG = {
   // CORS Configuration
   CORS: {
     ORIGIN: process.env.ALLOWED_ORIGINS?.split(",") || [
-      "http://localhost:3000",
+      "http://localhost:3002",
     ],
     CREDENTIALS: true,
     METHODS: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
@@ -166,7 +166,7 @@ export const SECURITY_CONFIG = {
       SECURE_COOKIES: true,
     },
     DEVELOPMENT: {
-      CORS_ORIGIN: ["http://localhost:3000", "http://localhost:3001"],
+      CORS_ORIGIN: ["http://localhost:3002", "http://localhost:3001"],
       // RATE_LIMIT_MULTIPLIER: 1, // DISABLED
       LOG_LEVEL: "debug",
       SECURE_COOKIES: false,

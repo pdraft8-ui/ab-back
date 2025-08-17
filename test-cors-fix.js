@@ -18,7 +18,7 @@ async function testCORS() {
       `${BASE_URL}/api/v1/user/signin`,
       {
         headers: {
-          Origin: "http://localhost:3000",
+          Origin: "http://localhost:3002",
           "Access-Control-Request-Method": "POST",
           "Access-Control-Request-Headers": "Content-Type, Authorization",
         },
@@ -46,7 +46,7 @@ async function testCORS() {
       {
         headers: {
           "Content-Type": "application/json",
-          Origin: "http://localhost:3000",
+          Origin: "http://localhost:3002",
         },
       }
     );
@@ -74,10 +74,10 @@ async function testCORS() {
 // Test different origins
 async function testMultipleOrigins() {
   const origins = [
-    "http://localhost:3000",
-    "http://localhost:3001",
     "http://localhost:3002",
-    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://localhost:3003",
+    "http://127.0.0.1:3002",
   ];
 
   console.log("\n🧪 Testing multiple origins...");

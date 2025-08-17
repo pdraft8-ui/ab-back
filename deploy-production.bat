@@ -81,7 +81,7 @@ if not exist uploads mkdir uploads
 
 REM Set production environment
 set NODE_ENV=production
-set PORT=3000
+set PORT=3002
 
 REM Start the application
 echo [INFO] Starting production server...
@@ -92,10 +92,10 @@ timeout /t 10 /nobreak >nul
 
 REM Health check
 echo [INFO] Performing health check...
-powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:3000/api/v1/health' -UseBasicParsing; if ($response.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }"
+powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://localhost:3002/api/v1/health' -UseBasicParsing; if ($response.StatusCode -eq 200) { exit 0 } else { exit 1 } } catch { exit 1 }"
 if %errorLevel% equ 0 (
     echo [INFO] Standalone deployment completed successfully
-    echo [INFO] Application is running on port 3000
+    echo [INFO] Application is running on port 3002
     echo [INFO] Logs are available in logs\app.log
 ) else (
     echo [ERROR] Standalone deployment failed
@@ -110,8 +110,8 @@ echo.
 echo 📋 Deployment Summary:
 echo ======================
 echo Environment: Production
-echo Port: 3000
-echo Health Check: http://localhost:3000/api/v1/health
+echo Port: 3002
+echo Health Check: http://localhost:3002/api/v1/health
 echo Logs: logs\app.log
 echo.
 echo 🔒 Security Notes:

@@ -46,7 +46,7 @@ TokenSignIn=your_secure_token_signing_key_here
 DBURL=mongodb://localhost:27017/AB_insurance_production
 
 # Optional (with defaults)
-PORT=3000
+PORT=3002
 LOG_LEVEL=warn
 REDIS_URL=redis://localhost:6379
 ALLOWED_ORIGINS=https://yourdomain.com
@@ -87,7 +87,7 @@ docker build -f Dockerfile.prod -t insurance-backend:prod .
 # Run container
 docker run -d \
   --name insurance-backend \
-  -p 3000:3000 \
+  -p 3000:3002 \
   -e NODE_ENV=production \
   -e DBURL=mongodb://host.docker.internal:27017/AB_insurance_production \
   insurance-backend:prod
@@ -152,10 +152,10 @@ docker run -d \
 
 ```bash
 # Application health
-curl http://localhost:3000/api/v1/health
+curl http://localhost:3002/api/v1/health
 
 # Metrics endpoint
-curl http://localhost:3000/metrics
+curl http://localhost:3002/metrics
 ```
 
 ### Logs
@@ -192,7 +192,7 @@ npm run db:optimize
 
 ```bash
 # Check what's using the port
-lsof -i :3000
+lsof -i :3002
 
 # Kill the process
 kill -9 <PID>

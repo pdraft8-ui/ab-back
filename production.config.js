@@ -1,7 +1,7 @@
 // Production Configuration
 export default {
   NODE_ENV: "production",
-  PORT: process.env.PORT || 3000,
+  PORT: process.env.PORT || 3002,
 
   // Database Configuration
   DBURL:

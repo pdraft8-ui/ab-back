@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Configuration
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:3002";
 const API_VERSION = "v3";
 const PAYMENT_ENDPOINT = `/api/v1/payment-${API_VERSION}`;
 

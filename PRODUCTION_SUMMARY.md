@@ -189,7 +189,7 @@ Internet → Nginx (SSL/TLS) → Application → MongoDB + Redis
 
 ### Common Issues
 
-1. **Port conflicts** - Check if port 3000 is available
+1. **Port conflicts** - Check if port 3002 is available
 2. **Database connection** - Verify MongoDB is running
 3. **Redis connection** - Check Redis service status
 4. **Build failures** - Clean and rebuild project

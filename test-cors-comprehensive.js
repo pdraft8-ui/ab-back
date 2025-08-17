@@ -44,10 +44,10 @@ const testEndpoints = [
 
 // Test different origins
 const testOrigins = [
-  "http://localhost:3000",
+      "http://localhost:3002",
   "http://localhost:3001",
   "http://localhost:3002",
-  "http://127.0.0.1:3000",
+      "http://127.0.0.1:3002",
   "http://localhost:5173", // Vite default
   "http://localhost:8080", // Common dev server
   "http://localhost:4200", // Angular default
@@ -63,7 +63,7 @@ async function testCORSForEndpoint(endpoint) {
     console.log("Testing OPTIONS preflight...");
     const optionsResponse = await axios.options(`${BASE_URL}${endpoint.url}`, {
       headers: {
-        Origin: "http://localhost:3000",
+        Origin: "http://localhost:3002",
         "Access-Control-Request-Method": endpoint.method,
         "Access-Control-Request-Headers": "Content-Type, Authorization",
       },
@@ -86,7 +86,7 @@ async function testCORSForEndpoint(endpoint) {
     const requestConfig = {
       headers: {
         "Content-Type": "application/json",
-        Origin: "http://localhost:3000",
+        Origin: "http://localhost:3002",
       },
     };
 
@@ -169,7 +169,7 @@ async function testBrowserSimulation() {
       {
         headers: {
           "Content-Type": "application/json",
-          Origin: "http://localhost:3000",
+          Origin: "http://localhost:3002",
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         },

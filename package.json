@@ -24,8 +24,8 @@
     "security:audit": "npm audit",
     "security:fix": "npm audit fix",
     "db:indexes": "ts-node --esm src/scripts/addDatabaseIndexes.ts",
-    "cache:stats": "curl -X GET http://localhost:3000/api/v1/cache/stats",
-    "cache:clear": "curl -X POST http://localhost:3000/api/v1/cache/clear",
+    "cache:stats": "curl -X GET http://localhost:3002/api/v1/cache/stats",
+    "cache:clear": "curl -X POST http://localhost:3002/api/v1/cache/clear",
     "test:v1-v3": "node test-v1-v3-endpoints.js",
     "test:cors": "node test-cors-fix.js",
     "test:cors:comprehensive": "node test-cors-comprehensive.js",
@@ -40,7 +40,7 @@
     "api:version": "ts-node --esm src/scripts/apiVersionManager.ts",
     "prod:setup": "npm run build:prod && npm run start:prod",
     "prod:deploy": "npm run build:prod",
-    "health:check": "curl -f http://localhost:3000/api/v1/health || exit 1"
+    "health:check": "curl -f http://localhost:3002/api/v1/health || exit 1"
   },
   "keywords": [],
   "author": "",

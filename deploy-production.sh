@@ -129,7 +129,7 @@ deploy_docker() {
     sleep 30
     
     # Health check
-    if curl -f http://localhost:3000/api/v1/health; then
+    if curl -f http://localhost:3002/api/v1/health; then
         print_status "Health check passed"
     else
         print_error "Health check failed"
@@ -146,7 +146,7 @@ deploy_standalone() {
     
     # Set production environment
     export NODE_ENV=production
-    export PORT=3000
+    export PORT=3002
     
     # Start the application
     print_status "Starting production server..."
@@ -156,9 +156,9 @@ deploy_standalone() {
     sleep 10
     
     # Health check
-    if curl -f http://localhost:3000/api/v1/health; then
+    if curl -f http://localhost:3002/api/v1/health; then
         print_status "Standalone deployment completed successfully"
-        print_status "Application is running on port 3000"
+        print_status "Application is running on port 3002"
         print_status "Logs are available in logs/app.log"
     else
         print_error "Standalone deployment failed"
@@ -202,8 +202,8 @@ main() {
     echo "📋 Deployment Summary:"
     echo "======================"
     echo "Environment: Production"
-    echo "Port: 3000"
-    echo "Health Check: http://localhost:3000/api/v1/health"
+    echo "Port: 3002"
+    echo "Health Check: http://localhost:3002/api/v1/health"
     echo "Logs: logs/app.log"
     
     if [ "$DOCKER_AVAILABLE" = true ]; then
