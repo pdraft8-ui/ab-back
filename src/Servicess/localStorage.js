@@ -13,7 +13,13 @@ const createDirectories = () => {
   [baseDir, documentSettingsDir, headersDir, footersDir, signaturesDir].forEach(
     (dir) => {
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        try {
+          fs.mkdirSync(dir, { recursive: true });
+        } catch (error) {
+          // Log warning but don't crash the application
+          console.warn(`Warning: Could not create directory ${dir}: ${error.message}`);
+          console.warn(`This might be due to permission issues. The application will continue to run.`);
+        }
       }
     }
   );
@@ -67,7 +73,12 @@ class LocalStorageService {
 
       // Create folder if it doesn't exist
       if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
+        try {
+          fs.mkdirSync(folderPath, { recursive: true });
+        } catch (error) {
+          console.warn(`Warning: Could not create folder ${folderPath}: ${error.message}`);
+          // Continue with upload attempt - the folder might already exist or be writable
+        }
       }
 
       const filePath = path.join(folderPath, fileName);
