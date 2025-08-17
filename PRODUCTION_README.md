@@ -87,7 +87,7 @@ docker build -f Dockerfile.prod -t insurance-backend:prod .
 # Run container
 docker run -d \
   --name insurance-backend \
-  -p 3000:3002 \
+     -p 3002:3002 \
   -e NODE_ENV=production \
   -e DBURL=mongodb://host.docker.internal:27017/AB_insurance_production \
   insurance-backend:prod
