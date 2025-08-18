@@ -4,10 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     ports:
-      - "3000:3000"
+      - "3002:3002"
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3002
       - DBURL=mongodb://mongo:27017/AB_insurance_production
       - MONGODB_URI=mongodb://mongo:27017/AB_insurance_production
       - REDIS_URL=redis://redis:6379
@@ -15,6 +15,7 @@ services:
       - ENABLE_MONITORING=true
       - ENABLE_CACHE=true
       - ENABLE_RATE_LIMITING=false
+      - ALLOWED_ORIGINS=http://52.21.181.107:8080,http://localhost:3002,https://localhost:3002,http://localhost:5173,https://localhost:5173,http://127.0.0.1:5173,https://127.0.0.1:5173,http://host.docker.internal:5173,https://host.docker.internal:5173
       - TRANZILA_API_URL=https://secure5.tranzila.com
       - TRANZILA_SUPPLIER_ID=basheer
       - TRANZILA_TERMINAL_ID=basheer
