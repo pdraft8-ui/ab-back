@@ -9,8 +9,8 @@ dotenv.config();
 // Connect to MongoDB
 async function connectDB() {
   try {
-    // Use the database URL from environment or default to local
-    const mongoUrl = process.env.DBURL || "mongodb://localhost:27017/AB_insurance";
+    // Use the production database URL
+    const mongoUrl = process.env.MONGODB_URI || process.env.DBURL || "mongodb://localhost:27017/AB_insurance_production";
     console.log("🔗 Connecting to MongoDB at:", mongoUrl);
     
     await mongoose.connect(mongoUrl);
@@ -48,7 +48,9 @@ async function createAdminUser() {
       phone: "+1234567890",
       password: hashedPassword,
       role: "admin",
-      status: "active"
+      status: "active",
+      createdAt: new Date(),
+      updatedAt: new Date()
     });
 
     // Save user to database
@@ -69,20 +71,13 @@ async function createAdminUser() {
 // List all users in database
 async function listUsers() {
   try {
-    const users = await UserModel.find({}).select('name email role status createdAt');
-    console.log("\n📋 Current users in database:");
-    console.log("=" .repeat(50));
+    const users = await UserModel.find({}, { password: 0 }).sort({ createdAt: -1 });
+    console.log("\n📋 All users in database:");
+    console.log("Total users:", users.length);
     
-    if (users.length === 0) {
-      console.log("No users found in database");
-    } else {
-      users.forEach((user, index) => {
-        console.log(`${index + 1}. ${user.name} (${user.email})`);
-        console.log(`   Role: ${user.role} | Status: ${user.status}`);
-        console.log(`   Created: ${user.createdAt.toLocaleDateString()}`);
-        console.log("");
-      });
-    }
+    users.forEach((user, index) => {
+      console.log(`${index + 1}. ${user.name} (${user.email}) - ${user.role} - ${user.status}`);
+    });
   } catch (error) {
     console.error("❌ Error listing users:", error);
   }
@@ -90,14 +85,14 @@ async function listUsers() {
 
 // Main function
 async function main() {
-  console.log("👤 Creating admin user in database...\n");
+  console.log("👤 Creating admin user in production database...\n");
   
   await connectDB();
   await createAdminUser();
   await listUsers();
   
   console.log("\n🎉 Admin user setup complete! You can now login with the credentials above.");
-  console.log("🌐 API Endpoint: http://localhost:3002/api/v1/user/signin");
+  console.log("🌐 API Endpoint: http://52.21.181.107:3002/api/v1/user/signin");
   
   // Close database connection
   await mongoose.connection.close();
@@ -106,3 +101,5 @@ async function main() {
 
 // Run the script
 main().catch(console.error);
+
+
